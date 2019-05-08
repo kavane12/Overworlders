@@ -35,7 +35,7 @@ if agent_host.receivedArgument("help"):
     exit(0)
     
 for iRound in range(ROUNDS):
-    my_mission = MalmoPython.MissionSpec(World.getMissionXML(0)) #mission xml for agent_id = 0
+    my_mission = MalmoPython.MissionSpec(World.getMissionXML(0), True) #mission xml for agent_id = 0
     my_mission_record = MalmoPython.MissionRecordSpec()
     
     # Attempt to start a mission:
