@@ -1,15 +1,109 @@
-SUMMARY = "Combat AI"
+import random
 
-def getMissionXML(agent_id):
-    ''' Build an XML mission string '''
+INVENTORY = '''
+<Inventory>
+    <InventoryItem slot="0" type="stone_sword" />
+    <InventoryItem slot="1" type="stone_axe" />
+    <InventoryItem slot="2" type="bow" />
+    <InventoryItem slot="9" type="arrow" quantity="64" />
+    <InventoryItem slot="3" type="shield" />
+</Inventory>
+'''
 
-    return '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-    <Mission xmlns="http://ProjectMalmo.microsoft.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+def agentName(i):
+    return "Player_" + str(i + 1)
+
+def agentXML(num_agents):
+	if num_agents == 2:
+		return '''
+        <AgentSection mode="Survival">
+            <Name>Player_1</Name>
+            <AgentStart>
+                <Placement x="-15.5" y="204.0" z="0.5"/>
+                <Inventory>
+				    <InventoryItem slot="0" type="stone_sword" />
+				    <InventoryItem slot="1" type="stone_axe" />
+				    <InventoryItem slot="2" type="bow" />
+				    <InventoryItem slot="9" type="arrow" quantity="64" />
+				    <InventoryItem slot="3" type="shield" />
+				</Inventory>
+            </AgentStart>
+            <AgentHandlers>
+                <ContinuousMovementCommands turnSpeedDegs="480"/>
+                <AbsoluteMovementCommands/>
+                <MissionQuitCommands quitDescription="Player_1 has won"/>
+                <InventoryCommands/>
+                <ObservationFromHotBar/>
+                <ObservationFromNearbyEntities>
+                    <Range name="entities" xrange="40" yrange="40" zrange="40"/>
+                </ObservationFromNearbyEntities>
+            </AgentHandlers>
+        </AgentSection>
+
+        <AgentSection mode="Survival">
+            <Name>Player_2</Name>
+            <AgentStart>
+                <Placement x="15.5" y="204.0" z="0.5"/>
+                <Inventory>
+				    <InventoryItem slot="0" type="stone_sword" />
+				    <InventoryItem slot="1" type="stone_axe" />
+				    <InventoryItem slot="2" type="bow" />
+				    <InventoryItem slot="9" type="arrow" quantity="64" />
+				    <InventoryItem slot="3" type="shield" />
+				</Inventory>
+            </AgentStart>
+            <AgentHandlers>
+                <ContinuousMovementCommands turnSpeedDegs="480"/>
+                <AbsoluteMovementCommands/>
+                <MissionQuitCommands quitDescription="Player_2 has won"/>
+                <InventoryCommands/>
+                <ObservationFromHotBar/>
+                <ObservationFromNearbyEntities>
+                    <Range name="entities" xrange="40" yrange="40" zrange="40"/>
+                </ObservationFromNearbyEntities>
+            </AgentHandlers>
+        </AgentSection>
+		'''
+	else:
+		agXML = ""
+		for i in range(num_agents):
+			agXML += '''
+			<AgentSection mode="Survival">
+	            <Name>Player_''' + agentName(i) + '''</Name>
+	            <AgentStart>
+	                <Placement x="''' + str(random.randint(-18,18)) + '''" y="204.0" z="''' + str(random.randint(-18,18)) + '''"/>
+	               	<Inventory>
+					    <InventoryItem slot="0" type="stone_sword" />
+					    <InventoryItem slot="1" type="stone_axe" />
+					    <InventoryItem slot="2" type="bow" />
+					    <InventoryItem slot="9" type="arrow" quantity="64" />
+					    <InventoryItem slot="3" type="shield" />
+					</Inventory>
+	            </AgentStart>
+	            <AgentHandlers>
+	                <ContinuousMovementCommands turnSpeedDegs="480"/>
+	                <AbsoluteMovementCommands/>
+	                <MissionQuitCommands quitDescription="Player_2 has won"/>
+	                <InventoryCommands/>
+	                <ObservationFromHotBar/>
+	                <ObservationFromNearbyEntities>
+	                    <Range name="entities" xrange="40" yrange="40" zrange="40"/>
+	                </ObservationFromNearbyEntities>
+	            </AgentHandlers>
+        	</AgentSection>
+			'''
+		return agXML
+
+def getWorldXML(reset, num_agents):
+	xml = '''
+	<?xml version="1.0" encoding="UTF-8" standalone="no" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ?>
+    <Mission xmlns="http://ProjectMalmo.microsoft.com">
         <About>
-            <Summary>''' + SUMMARY + '''</Summary>
-            <Description>Test01</Description>
+            <Summary>Fight to the death!</Summary>
         </About>
-
+        <ModSettings>
+            <MsPerTick>50</MsPerTick>
+        </ModSettings>
         <ServerSection>
             <ServerInitialConditions>
                 <Time>
@@ -20,40 +114,40 @@ def getMissionXML(agent_id):
                 <AllowSpawning>false</AllowSpawning>
             </ServerInitialConditions>
             <ServerHandlers>
-                <FlatWorldGenerator generatorString="3;5*minecraft:air;2;" />
+                <FlatWorldGenerator forceReset="'''+ reset +'''" generatorString="3;5*minecraft:air;2;" />
                 <DrawingDecorator>
-                    <DrawCuboid x1="-50" y1="100" z1="-50" x2="50" y2="100" z2="50" type="grass" />
-                    <DrawCuboid x1="-51" y1="102" z1="-51" x2="50" y2="102" z2="-51" type="wooden_slab" />
-                    <DrawCuboid x1="51" y1="102" z1="-51" x2="51" y2="102" z2="50" type="wooden_slab" />
-                    <DrawCuboid x1="51" y1="102" z1="51" x2="-50" y2="102" z2="51" type="wooden_slab" />
-                    <DrawCuboid x1="-51" y1="102" z1="51" x2="-51" y2="102" z2="-50" type="wooden_slab" />
+                    <DrawCuboid x1="-20" y1="199" z1="-20" x2="20" y2="227" z2="20" type="sandstone"/>
+                    <DrawCuboid x1="-19" y1="200" z1="-19" x2="19" y2="200" z2="19" type="grass"/>
+                    <DrawCuboid x1="-19" y1="201" z1="-19" x2="18" y2="247" z2="18" type="air"/>
+                    <DrawBlock x="0" y="226" z="0" type="fence"/>
                 </DrawingDecorator>
+                <ServerQuitFromTimeUp timeLimitMs="1000000"/>
                 <ServerQuitWhenAnyAgentFinishes />
             </ServerHandlers>
         </ServerSection>
+    '''
 
-        <AgentSection mode="Survival">
-            <Name>Player''' + str(agent_id) + '''</Name>
-            <AgentStart>
-                <Placement x="-25.5" y="101.0" z="0.5"/>
-                <Inventory>
-                    <InventoryItem slot="0" type="stone_sword" />
-                    <InventoryItem slot="1" type="stone_axe" />
-                    <InventoryItem slot="2" type="bow" />
-                    <InventoryItem slot="9" type="arrow" quantity="64" />
-                    <InventoryItem slot="3" type="shield" />
-                </Inventory>
-            </AgentStart>
-            <AgentHandlers>
-                <ContinuousMovementCommands turnSpeedDegs="480"/>
-                <AbsoluteMovementCommands/>
-                <MissionQuitCommands/>
-                <InventoryCommands/>
-                <ObservationFromHotBar/>
-                <ObservationFromNearbyEntities>
-                    <Range name="entities" xrange="40" yrange="40" zrange="40"/>
-                </ObservationFromNearbyEntities>
-            </AgentHandlers>
-        </AgentSection>
+    # Add players
+	xml += agentXML(num_agents)
 
-    </Mission>'''
+    # Add the camera (player)
+	xml += '''
+    <AgentSection mode="Creative">
+        <Name>TheWatcher</Name>
+        <AgentStart>
+          	<Placement x="0.5" y="228" z="0.5" pitch="90"/>
+        </AgentStart>
+        <AgentHandlers>
+          	<ContinuousMovementCommands turnSpeedDegs="360"/>
+          	<MissionQuitCommands/>
+          	<VideoProducer>
+            	<Width>640</Width>
+           	 <Height>640</Height>
+          	</VideoProducer>
+        </AgentHandlers>
+    </AgentSection>
+    '''
+
+	xml += '</Mission>'
+	print(xml)
+	return xml
