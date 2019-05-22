@@ -168,7 +168,7 @@ for mission_no in range(1, num_missions+1):
     time.sleep(1)
     running = True
 
-    print("RUNNNNNNNING")
+    print("Running mission")
 
     # AIs will make actions, return false if dead 
     q = False
@@ -183,7 +183,7 @@ for mission_no in range(1, num_missions+1):
     hasEnded = False
     while not hasEnded:
         hasEnded = True # assume all good
-        print(".", end="")
+        print(".", end=' ')
         time.sleep(0.1)
         for ah in agent_hosts:
             world_state = ah.getWorldState()

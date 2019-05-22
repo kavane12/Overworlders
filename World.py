@@ -1,5 +1,11 @@
 import random
 
+# Inventory slots
+# Hotbar: 		0-9
+# Inventory:	9-38
+# Armor:		36-39
+
+
 INVENTORY = '''
 <Inventory>
     <InventoryItem slot="0" type="stone_sword" />
@@ -7,6 +13,14 @@ INVENTORY = '''
     <InventoryItem slot="2" type="bow" />
     <InventoryItem slot="9" type="arrow" quantity="64" />
     <InventoryItem slot="3" type="shield" />
+
+    <InventoryItem slot="36" type="iron_boots" />
+    <InventoryItem slot="37" type="iron_leggings" />
+    <InventoryItem slot="38" type="iron_chestplate" />
+    <InventoryItem slot="39" type="iron_helmet" />
+    
+    <InventoryItem slot="-1" type="shield" />
+
 </Inventory>
 '''
 
@@ -20,13 +34,7 @@ def agentXML(num_agents):
             <Name>Player_1</Name>
             <AgentStart>
                 <Placement x="-15.5" y="204.0" z="0.5"/>
-                <Inventory>
-				    <InventoryItem slot="0" type="stone_sword" />
-				    <InventoryItem slot="1" type="stone_axe" />
-				    <InventoryItem slot="2" type="bow" />
-				    <InventoryItem slot="9" type="arrow" quantity="64" />
-				    <InventoryItem slot="3" type="shield" />
-				</Inventory>
+				''' + INVENTORY + '''
             </AgentStart>
             <AgentHandlers>
                 <ContinuousMovementCommands turnSpeedDegs="480"/>
@@ -44,13 +52,7 @@ def agentXML(num_agents):
             <Name>Player_2</Name>
             <AgentStart>
                 <Placement x="15.5" y="204.0" z="0.5"/>
-                <Inventory>
-				    <InventoryItem slot="0" type="stone_sword" />
-				    <InventoryItem slot="1" type="stone_axe" />
-				    <InventoryItem slot="2" type="bow" />
-				    <InventoryItem slot="9" type="arrow" quantity="64" />
-				    <InventoryItem slot="3" type="shield" />
-				</Inventory>
+                ''' + INVENTORY + '''
             </AgentStart>
             <AgentHandlers>
                 <ContinuousMovementCommands turnSpeedDegs="480"/>
@@ -72,13 +74,7 @@ def agentXML(num_agents):
 	            <Name>Player_''' + agentName(i) + '''</Name>
 	            <AgentStart>
 	                <Placement x="''' + str(random.randint(-18,18)) + '''" y="204.0" z="''' + str(random.randint(-18,18)) + '''"/>
-	               	<Inventory>
-					    <InventoryItem slot="0" type="stone_sword" />
-					    <InventoryItem slot="1" type="stone_axe" />
-					    <InventoryItem slot="2" type="bow" />
-					    <InventoryItem slot="9" type="arrow" quantity="64" />
-					    <InventoryItem slot="3" type="shield" />
-					</Inventory>
+	               	''' + INVENTORY + '''
 	            </AgentStart>
 	            <AgentHandlers>
 	                <ContinuousMovementCommands turnSpeedDegs="480"/>
