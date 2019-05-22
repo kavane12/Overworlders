@@ -26,7 +26,8 @@ import json
 import math
 import uuid
 
-from world import getWorldXML, testW
+from World import getWorldXML
+from CombatAI import AI
 
 # Create one agent host for parsing:
 agent_hosts = [MalmoPython.AgentHost()]
@@ -52,6 +53,9 @@ NUM_AGENTS = max(2, agents_requested - 1) # Will be NUM_AGENTS robots running ar
 
 # Create the rest of the agent hosts - one for each robot, plus one to give a bird's-eye view:
 agent_hosts += [MalmoPython.AgentHost() for x in range(1, NUM_AGENTS + 1) ]
+
+# Create AI objects:
+ais = [AI('basic' if x == 0 else 'passive') for x in range(NUM_AGENTS)]
 
 # Set up debug output:
 for ah in agent_hosts:
@@ -133,15 +137,15 @@ def safeWaitForStart(agent_hosts):
 # different machine.
 client_pool = MalmoPython.ClientPool()
 for x in range(10000, 10000 + NUM_AGENTS + 1):
-	client_pool.add( MalmoPython.ClientInfo('127.0.0.1', x) )
+    client_pool.add( MalmoPython.ClientInfo('127.0.0.1', x) )
 
 
-num_missions = 1 #if INTEGRATION_TEST_MODE else 30000
+num_missions = 1
 for mission_no in range(1, num_missions+1):
-	print("Running mission #" + str(mission_no))
+    print("Running mission #" + str(mission_no))
 
     # Create mission xml - use forcereset if this is the first mission.
-	my_mission = MalmoPython.MissionSpec(getWorldXML("true" if mission_no == 1 else "false", NUM_AGENTS), True)
+    my_mission = MalmoPython.MissionSpec(getWorldXML("true" if mission_no == 1 else "false", NUM_AGENTS), True)
     # Generate an experiment ID for this mission.
     # This is used to make sure the right clients join the right servers -
     # if the experiment IDs don't match, the startMission request will be rejected.
@@ -155,39 +159,33 @@ for mission_no in range(1, num_missions+1):
     # across different threads, processes, or machines, a different approach will be required.
     # (Eg generate the IDs procedurally, in a way that is guaranteed to produce the same results
     # for each agentHost independently.)
-	experimentID = str(uuid.uuid4())
-	for i in range(len(agent_hosts)):
-		safeStartMission(agent_hosts[i], my_mission, client_pool, MalmoPython.MissionRecordSpec(), i, experimentID)
+    experimentID = str(uuid.uuid4())
+    for i in range(len(agent_hosts)):
+        safeStartMission(agent_hosts[i], my_mission, client_pool, MalmoPython.MissionRecordSpec(), i, experimentID)
 
-	safeWaitForStart(agent_hosts)
+    safeWaitForStart(agent_hosts)
 
-	time.sleep(1)
-	running = True
+    time.sleep(1)
+    running = True
 
-	print("RUNNNNNNNING")
-    # DO STUFF HERE
+    print("RUNNNNNNNING")
 
-    # Make camera guy quit the mission
-	time.sleep(100)
-	agent_hosts[-1].sendCommand("quit")
+    # AIs will make actions, return false if dead 
+    q = False
+    while not q:
+        for i in range(NUM_AGENTS):
+            if not ais[i].act(agent_hosts[i]):
+                q = True
 
-
-
-
-
-
-
-    # HECK YEAR
-
-	print("Waiting for mission to end ", end=' ')
+    print("Waiting for mission to end ", end=' ')
     # Mission should have ended already, but we want to wait until all the various agent hosts
     # have had a chance to respond to their mission ended message.
-	hasEnded = False
-	while not hasEnded:
-		hasEnded = True # assume all good
-		print(".", end="")
-		time.sleep(0.1)
-		for ah in agent_hosts:
-			world_state = ah.getWorldState()
-			if world_state.is_mission_running:
-				hasEnded = False # all not good
+    hasEnded = False
+    while not hasEnded:
+        hasEnded = True # assume all good
+        print(".", end="")
+        time.sleep(0.1)
+        for ah in agent_hosts:
+            world_state = ah.getWorldState()
+            if world_state.is_mission_running:
+                hasEnded = False # all not good

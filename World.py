@@ -30,13 +30,13 @@ def agentXML(num_agents):
             </AgentStart>
             <AgentHandlers>
                 <ContinuousMovementCommands turnSpeedDegs="480"/>
-                <AbsoluteMovementCommands/>
                 <MissionQuitCommands quitDescription="Player_1 has won"/>
                 <InventoryCommands/>
                 <ObservationFromHotBar/>
                 <ObservationFromNearbyEntities>
                     <Range name="entities" xrange="40" yrange="40" zrange="40"/>
                 </ObservationFromNearbyEntities>
+                <ObservationFromFullStats/>
             </AgentHandlers>
         </AgentSection>
 
@@ -54,13 +54,13 @@ def agentXML(num_agents):
             </AgentStart>
             <AgentHandlers>
                 <ContinuousMovementCommands turnSpeedDegs="480"/>
-                <AbsoluteMovementCommands/>
                 <MissionQuitCommands quitDescription="Player_2 has won"/>
                 <InventoryCommands/>
                 <ObservationFromHotBar/>
                 <ObservationFromNearbyEntities>
                     <Range name="entities" xrange="40" yrange="40" zrange="40"/>
                 </ObservationFromNearbyEntities>
+                <ObservationFromFullStats/>
             </AgentHandlers>
         </AgentSection>
 		'''
