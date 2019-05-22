@@ -4,7 +4,7 @@ import random
 # Hotbar: 		0-9
 # Inventory:	9-38
 # Armor:		36-39
-
+# Offhand:		???
 
 INVENTORY = '''
 <Inventory>
@@ -12,15 +12,12 @@ INVENTORY = '''
     <InventoryItem slot="1" type="stone_axe" />
     <InventoryItem slot="2" type="bow" />
     <InventoryItem slot="9" type="arrow" quantity="64" />
-    <InventoryItem slot="3" type="shield" />
+    <InventoryItem slot="8" type="shield" />
 
     <InventoryItem slot="36" type="iron_boots" />
     <InventoryItem slot="37" type="iron_leggings" />
     <InventoryItem slot="38" type="iron_chestplate" />
     <InventoryItem slot="39" type="iron_helmet" />
-    
-    <InventoryItem slot="-1" type="shield" />
-
 </Inventory>
 '''
 

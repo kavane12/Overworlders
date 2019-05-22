@@ -18,6 +18,7 @@ class AI:
         self.life = 20
         self.aiType = aiType
         self.opponents = {}
+        self.equippedShield = False
         
 
     def act(self, agentHost):
