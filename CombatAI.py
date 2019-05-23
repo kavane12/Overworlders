@@ -24,6 +24,17 @@ class AI:
     def act(self, agentHost):
         worldState = agentHost.getWorldState()
         if worldState.number_of_observations_since_last_state > 0:
+
+        	if not self.equippedShield:
+        		self.equippedShield = True
+        		agentHost.sendCommand("hotbar.9 1") # Select hotbar slot 9 (shield, hotbar is 1 indexed)
+        		agentHost.sendCommand("hotbar.9 0")
+        		#agentHost.sendCommand("") # Press "F" somehow here
+        		agentHost.sendCommand("hotbar.1 1") # Reselect first item on hotbar
+        		agentHost.sendCommand("hotbar.1 0")
+
+
+
             obs = json.loads(worldState.observations[-1].text)
             self.life = obs["Life"]
             xPos = obs["XPos"]
