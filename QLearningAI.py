@@ -7,7 +7,14 @@ GAMMA   = 1.0   # The discount factor, closer to 0 = prefers immediate rewards, 
 
 Q_TABLE_FILE = None
 
-
+# NOTES FOR Q_TABLE STATES
+#   myHealth: {Low, Med, High}
+#   oppHealth: ^
+#   
+#   distance: {Close, Med, Far}
+#   
+#   myEquipped: {Sword, Axe, Shield} (Bow for later?)
+#   oppEquipped: ^
 
 
 class QLearningAI:
