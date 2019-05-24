@@ -29,6 +29,7 @@ import uuid
 from World import getWorldXML, playerName
 from BasicAI import BasicAI
 from PassiveAI import PassiveAI
+from QLearningAI import QLearningAI
 
 # Create one agent host for parsing:
 agent_hosts = [MalmoPython.AgentHost()]
@@ -173,6 +174,14 @@ for mission_no in range(1, num_missions+1):
 
 
     print("MISSION START")
+
+    # All players will initialize (and wait for others to initialize)
+    initialized = False
+    while not initialized:
+        initialized = True  # assume all good
+        for i in range(NUM_AGENTS):
+            if not ais[i].initialize(agent_hosts[i]):
+                initialized = False # all not good
 
     # AIs will make actions, return false if dead 
     q = False

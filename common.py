@@ -1,3 +1,5 @@
+# Various helper function used by multiple AI types
+
 import math
 
 # Convert radians to degrees

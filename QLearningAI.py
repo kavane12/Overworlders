@@ -1,22 +1,51 @@
 import json
 from common import deg, angleMod, relativeAngle, relativeDistance
 
-class BasicAI:
+EPSILON = 0.3   # The chance at picking a random action
+ALPHA   = 0.1   # The learning rate
+GAMMA   = 1.0   # The discount factor, closer to 0 = prefers immediate rewards, closer to 1 = longterm gains
+
+Q_TABLE_FILE = None
+
+
+
+
+class QLearningAI:
     def __init__(self, name):
         self.name = name
         self.life = 20
         self.opponents = {}
-        self.equippedShield = False
+
+
+        # Q-table parameters
+        self.epsilon = EPSILON
+        self.alpha = ALPHA
+        self.gamma = GAMMA
         
+        self.q_table = {}
+        if Q_TABLE_FILE:
+            with open(Q_TABLE_FILE) as f:
+                self.q_table = json.load(f)
+
+
+    def initialize(self, agentHost):
+        equippedShield = False
+
+        if not equippedShield:
+            worldState = agentHost.getWorldState()
+            if worldState.number_of_observations_since_last_state > 0:
+                agentHost.sendCommand("chat " + "/replaceitem entity " + self.name + " slot.weapon.offhand minecraft:shield")
+                equippedShield = True
+            else:
+                return False
+
+        return True
+
 
     def act(self, agentHost):
         worldState = agentHost.getWorldState()
 
         if worldState.number_of_observations_since_last_state > 0:
-
-            if not self.equippedShield:
-                agentHost.sendCommand("chat " + "/replaceitem entity " + self.name + " slot.weapon.offhand minecraft:shield")
-                self.equippedShield = True
 
             obs = json.loads(worldState.observations[-1].text)
 
@@ -48,20 +77,5 @@ class BasicAI:
             if self.life <= 0:
                 return False
 
-            self.basicAI(agentHost)
             
         return True
-
-    def basicAI(self, agentHost):
-                            # Parameters:
-        turnAngle = 80      # Angle at which agent will turn at full speed. If set too low, agent will oscillate
-        moveDist = 3        # Agent will try to stay within this distance of enemy
-        attackAngle = 10    # Maximum angle at which agent will try to attack
-        attackDist = 3.5    # Maximum distance at which agent will try to attack
-
-        enemy = list(self.opponents.values())[0]
-        turnSpd = enemy['angle'] / turnAngle if abs(enemy['angle']) < turnAngle else (1 if enemy['angle'] > 0 else -1)
-        agentHost.sendCommand("turn {}".format(turnSpd))
-        agentHost.sendCommand("move {}".format(1 if enemy['dist'] > moveDist else 0))
-        agentHost.sendCommand("attack {}".format(1 if abs(enemy['angle']) < attackAngle and enemy['dist'] < attackDist else 0))
-

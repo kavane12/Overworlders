@@ -6,17 +6,26 @@ class BasicAI:
         self.name = name
         self.life = 20
         self.opponents = {}
-        self.equippedShield = False
         
+
+    def initialize(self, agentHost):
+        equippedShield = False
+
+        if not equippedShield:
+            worldState = agentHost.getWorldState()
+            if worldState.number_of_observations_since_last_state > 0:
+                agentHost.sendCommand("chat " + "/replaceitem entity " + self.name + " slot.weapon.offhand minecraft:shield")
+                equippedShield = True
+            else:
+                return False
+
+        return True
+
 
     def act(self, agentHost):
         worldState = agentHost.getWorldState()
 
         if worldState.number_of_observations_since_last_state > 0:
-
-            if not self.equippedShield:
-                agentHost.sendCommand("chat " + "/replaceitem entity " + self.name + " slot.weapon.offhand minecraft:shield")
-                self.equippedShield = True
 
             obs = json.loads(worldState.observations[-1].text)
 
