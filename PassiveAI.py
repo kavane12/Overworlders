@@ -1,7 +1,7 @@
 import json
 from common import deg, angleMod, relativeAngle, relativeDistance
 
-class BasicAI:
+class PassiveAI:
     def __init__(self, name):
         self.name = name
         self.life = 20
@@ -42,26 +42,17 @@ class BasicAI:
                         'pitch':e['pitch'],
                         'life':e['life'],
                     }
-            #if(self.name == 'Player_1'):
-                #o = self.opponents['Player_2']
-                #print(o['angle'], o['dist'], o['yaw'], o['y']) #debug code
+
             if self.life <= 0:
                 return False
 
-            self.basicAI(agentHost)
+            self.faceOpponent(agentHost)
             
         return True
 
-    def basicAI(self, agentHost):
-                            # Parameters:
+    def faceOpponent(self, agentHost):
         turnAngle = 80      # Angle at which agent will turn at full speed. If set too low, agent will oscillate
-        moveDist = 3        # Agent will try to stay within this distance of enemy
-        attackAngle = 10    # Maximum angle at which agent will try to attack
-        attackDist = 3.5    # Maximum distance at which agent will try to attack
 
         enemy = list(self.opponents.values())[0]
         turnSpd = enemy['angle'] / turnAngle if abs(enemy['angle']) < turnAngle else (1 if enemy['angle'] > 0 else -1)
         agentHost.sendCommand("turn {}".format(turnSpd))
-        agentHost.sendCommand("move {}".format(1 if enemy['dist'] > moveDist else 0))
-        agentHost.sendCommand("attack {}".format(1 if abs(enemy['angle']) < attackAngle and enemy['dist'] < attackDist else 0))
-

@@ -27,7 +27,8 @@ import math
 import uuid
 
 from World import getWorldXML, playerName
-from CombatAI import AI
+from BasicAI import BasicAI
+from PassiveAI import PassiveAI
 
 # Create one agent host for parsing:
 agent_hosts = [MalmoPython.AgentHost()]
@@ -55,7 +56,8 @@ NUM_AGENTS = max(2, agents_requested - 1) # Will be NUM_AGENTS robots running ar
 agent_hosts += [MalmoPython.AgentHost() for x in range(1, NUM_AGENTS + 1) ]
 
 # Create AI objects:
-ais = [AI(playerName(i), 'basic' if i == 0 else 'passive') for i in range(NUM_AGENTS)]
+ais = [PassiveAI(playerName(i)) for i in range(NUM_AGENTS)]
+ais[0] = BasicAI(playerName(0))
 
 # Set up debug output:
 for ah in agent_hosts:

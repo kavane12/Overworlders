@@ -48,11 +48,11 @@ class BasicAI:
             if self.life <= 0:
                 return False
 
-            self.basicAI(agentHost)
+            self.attackOpponent(agentHost)
             
         return True
 
-    def basicAI(self, agentHost):
+    def attackOpponent(self, agentHost):
                             # Parameters:
         turnAngle = 80      # Angle at which agent will turn at full speed. If set too low, agent will oscillate
         moveDist = 3        # Agent will try to stay within this distance of enemy
