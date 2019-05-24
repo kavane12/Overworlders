@@ -7,7 +7,7 @@ def deg(angle):
 def rad(angle):
     return angle * math.pi / 180
 
-def angleMod(angle):    #converts an angle to a value between -180 and 180 degrees
+def angleMod(angle):    # Converts an angle to a value between -180 and 180 degrees
     angle %= 360
     if angle > 180:
         angle -= 360
@@ -24,14 +24,15 @@ class AI:
 
     def act(self, agentHost):
         worldState = agentHost.getWorldState()
-        
+
         if worldState.number_of_observations_since_last_state > 0:
 
             if not self.equippedShield:
-                self.equippedShield = True
                 agentHost.sendCommand("chat " + "/replaceitem entity " + self.name + " slot.weapon.offhand minecraft:shield")
+                self.equippedShield = True
 
             obs = json.loads(worldState.observations[-1].text)
+
             self.life = obs["Life"]
             xPos = obs["XPos"]
             yPos = obs["YPos"]
@@ -39,6 +40,7 @@ class AI:
             pitch = obs["Pitch"]
             yaw = obs["Yaw"]
             entities = obs["entities"]
+
             for e in entities:
                 name = e['name']
                 if name != self.name and name.startswith("Player"):
@@ -58,6 +60,7 @@ class AI:
                 #print(o['angle'], o['dist'], o['yaw'], o['y']) #debug code
             if self.life <= 0:
                 return False
+
             if self.aiType == 'basic':
                 self.basicAI(agentHost)
             
