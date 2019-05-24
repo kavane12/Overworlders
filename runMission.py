@@ -26,7 +26,7 @@ import json
 import math
 import uuid
 
-from World import getWorldXML
+from World import getWorldXML, agentName
 from CombatAI import AI
 
 # Create one agent host for parsing:
@@ -55,7 +55,7 @@ NUM_AGENTS = max(2, agents_requested - 1) # Will be NUM_AGENTS robots running ar
 agent_hosts += [MalmoPython.AgentHost() for x in range(1, NUM_AGENTS + 1) ]
 
 # Create AI objects:
-ais = [AI('basic' if x == 0 else 'passive') for x in range(NUM_AGENTS)]
+ais = [AI(agentName(i), 'basic' if i == 0 else 'passive') for i in range(NUM_AGENTS)]
 
 # Set up debug output:
 for ah in agent_hosts:
@@ -166,9 +166,11 @@ for mission_no in range(1, num_missions+1):
     safeWaitForStart(agent_hosts)
 
     time.sleep(1)
-    running = True
 
-    print("Running mission")
+
+
+
+    print("MISSION START")
 
     # AIs will make actions, return false if dead 
     q = False
@@ -176,6 +178,12 @@ for mission_no in range(1, num_missions+1):
         for i in range(NUM_AGENTS):
             if not ais[i].act(agent_hosts[i]):
                 q = True
+
+
+    print("MISSION END")
+
+
+
 
     print("Waiting for mission to end ", end=' ')
     # Mission should have ended already, but we want to wait until all the various agent hosts

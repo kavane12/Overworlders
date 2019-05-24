@@ -35,6 +35,7 @@ def agentXML(num_agents):
             </AgentStart>
             <AgentHandlers>
                 <ContinuousMovementCommands turnSpeedDegs="480"/>
+                <ChatCommands/>
                 <MissionQuitCommands quitDescription="Player_1 has won"/>
                 <InventoryCommands/>
                 <ObservationFromHotBar/>
@@ -53,6 +54,7 @@ def agentXML(num_agents):
             </AgentStart>
             <AgentHandlers>
                 <ContinuousMovementCommands turnSpeedDegs="480"/>
+                <ChatCommands/>
                 <MissionQuitCommands quitDescription="Player_2 has won"/>
                 <InventoryCommands/>
                 <ObservationFromHotBar/>
@@ -75,6 +77,7 @@ def agentXML(num_agents):
 	            </AgentStart>
 	            <AgentHandlers>
 	                <ContinuousMovementCommands turnSpeedDegs="480"/>
+                    <ChatCommands/>
 	                <AbsoluteMovementCommands/>
 	                <MissionQuitCommands quitDescription="Player_2 has won"/>
 	                <InventoryCommands/>
@@ -126,7 +129,7 @@ def getWorldXML(reset, num_agents):
     # Add the camera (player)
 	xml += '''
     <AgentSection mode="Creative">
-        <Name>TheWatcher</Name>
+        <Name>Observer</Name>
         <AgentStart>
           	<Placement x="0.5" y="228" z="0.5" pitch="90"/>
         </AgentStart>

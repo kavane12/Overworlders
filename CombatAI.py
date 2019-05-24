@@ -14,7 +14,8 @@ def angleMod(angle):    #converts an angle to a value between -180 and 180 degre
     return angle
 
 class AI:
-    def __init__(self, aiType = "passive"):
+    def __init__(self, name, aiType = "passive"):
+        self.name = name
         self.life = 20
         self.aiType = aiType
         self.opponents = {}
@@ -23,17 +24,12 @@ class AI:
 
     def act(self, agentHost):
         worldState = agentHost.getWorldState()
+        
         if worldState.number_of_observations_since_last_state > 0:
 
-        	if not self.equippedShield:
-        		self.equippedShield = True
-        		agentHost.sendCommand("hotbar.9 1") # Select hotbar slot 9 (shield, hotbar is 1 indexed)
-        		agentHost.sendCommand("hotbar.9 0")
-        		#agentHost.sendCommand("") # Press "F" somehow here
-        		agentHost.sendCommand("hotbar.1 1") # Reselect first item on hotbar
-        		agentHost.sendCommand("hotbar.1 0")
-
-
+            if not self.equippedShield:
+                self.equippedShield = True
+                agentHost.sendCommand("chat " + "/replaceitem entity " + self.name + " slot.weapon.offhand minecraft:shield")
 
             obs = json.loads(worldState.observations[-1].text)
             self.life = obs["Life"]
@@ -42,7 +38,6 @@ class AI:
             zPos = obs["ZPos"]
             pitch = obs["Pitch"]
             yaw = obs["Yaw"]
-            self.name = obs["Name"]
             entities = obs["entities"]
             for e in entities:
                 name = e['name']
