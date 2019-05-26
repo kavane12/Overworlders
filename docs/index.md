@@ -7,8 +7,11 @@ title:  Home
 **Welcome to the home of the Overworlders**, a team dedicated to creating the most menacing PvP AI ever to roam
 the Overworld!
 
-Our AI uses a Deep Q-learning approach to take full advantage of the various quirks Minecraft's combat system to kick
-human butt! 
+
+Minecraft's combat system has always been static; spam attack on a target player until they die. With the release of Minecraft 1.9 Combat Update, this all changed. Now, spammed attacks do close to no damage, and instead each melee weapon has a attack timer that must charge up before it can do full damage. Furthermore, shields were added to the game to block melee and projectile attacks. So the question is, what's the best approach to player combat?
+
+
+Our AI uses a Deep Q-learning approach to take full advantage of the various quirks Minecraft's combat system. It is trained to use each of the games main weapons: the sword, the axe, and the bow and fights other players / AI in an open flat arena.
 
 
 Source code: [Github](https://github.com/kavane12/Overworlders)
