@@ -57,8 +57,8 @@ NUM_AGENTS = max(2, agents_requested - 1) # Will be NUM_AGENTS robots running ar
 agent_hosts += [MalmoPython.AgentHost() for x in range(1, NUM_AGENTS + 1) ]
 
 # Create AI objects:
-ais = [PassiveAI(playerName(i)) for i in range(NUM_AGENTS)]
-ais[0] = BasicAI(playerName(0))
+ais = [QLearningAI('T1.dqn', 'T1.dqn'),
+    QLearningAI('T2.dqn', 'T2.dqn')]
 
 # Set up debug output:
 for ah in agent_hosts:
@@ -75,7 +75,7 @@ else:
 def safeStartMission(agent_host, my_mission, my_client_pool, my_mission_record, role, expId):
     used_attempts = 0
     max_attempts = 5
-    print("Calling startMission for role", role)
+    #print("Calling startMission for role", role)
     while True:
         try:
             # Attempt start:
@@ -84,19 +84,19 @@ def safeStartMission(agent_host, my_mission, my_client_pool, my_mission_record, 
         except MalmoPython.MissionException as e:
             errorCode = e.details.errorCode
             if errorCode == MalmoPython.MissionErrorCode.MISSION_SERVER_WARMING_UP:
-                print("Server not quite ready yet - waiting...")
+                #print("Server not quite ready yet - waiting...")
                 time.sleep(2)
             elif errorCode == MalmoPython.MissionErrorCode.MISSION_INSUFFICIENT_CLIENTS_AVAILABLE:
-                print("Not enough available Minecraft instances running.")
+                #print("Not enough available Minecraft instances running.")
                 used_attempts += 1
                 if used_attempts < max_attempts:
-                    print("Will wait in case they are starting up.", max_attempts - used_attempts, "attempts left.")
+                    #print("Will wait in case they are starting up.", max_attempts - used_attempts, "attempts left.")
                     time.sleep(2)
             elif errorCode == MalmoPython.MissionErrorCode.MISSION_SERVER_NOT_FOUND:
-                print("Server not found - has the mission with role 0 been started yet?")
+                #print("Server not found - has the mission with role 0 been started yet?")
                 used_attempts += 1
                 if used_attempts < max_attempts:
-                    print("Will wait and retry.", max_attempts - used_attempts, "attempts left.")
+                    #print("Will wait and retry.", max_attempts - used_attempts, "attempts left.")
                     time.sleep(2)
             else:
                 print("Other error:", e.message)
@@ -105,10 +105,10 @@ def safeStartMission(agent_host, my_mission, my_client_pool, my_mission_record, 
         if used_attempts == max_attempts:
             print("All chances used up - bailing now.")
             exit(1)
-    print("startMission called okay.")
+    #print("startMission called okay.")
 
 def safeWaitForStart(agent_hosts):
-    print("Waiting for the mission to start", end=' ')
+    #print("Waiting for the mission to start", end=' ')
     start_flags = [False for a in agent_hosts]
     start_time = time.time()
     time_out = 120  # Allow a two minute timeout.
@@ -123,12 +123,12 @@ def safeWaitForStart(agent_hosts):
             print("Bailing now.")
             exit(1)
         time.sleep(0.1)
-        print(".", end=' ')
+        #print(".", end=' ')
     if time.time() - start_time >= time_out:
         print("Timed out while waiting for mission to start - bailing.")
         exit(1)
-    print()
-    print("Mission has started.")
+    #print()
+    #print("Mission has started.")
 
 
 # Set up a client pool.
@@ -143,7 +143,7 @@ for x in range(10000, 10000 + NUM_AGENTS + 1):
     client_pool.add( MalmoPython.ClientInfo('127.0.0.1', x) )
 
 
-num_missions = 1
+num_missions = 1000
 for mission_no in range(1, num_missions+1):
     print("Running mission #" + str(mission_no))
 
@@ -173,36 +173,37 @@ for mission_no in range(1, num_missions+1):
 
 
 
-    print("MISSION START")
+    #print("MISSION START")
 
     # All players will initialize (and wait for others to initialize)
-    initialized = False
-    while not initialized:
-        initialized = True  # assume all good
-        for i in range(NUM_AGENTS):
-            if not ais[i].initialize(agent_hosts[i]):
-                initialized = False # all not good
+    for i in range(NUM_AGENTS):
+        ais[i].initialize(agent_hosts[i])
+
+    agent_hosts[-1].sendCommand("chat /gamerule naturalRegeneration false")
 
     # AIs will make actions, return false if dead 
     q = False
     while not q:
-        for i in range(NUM_AGENTS):
-            if not ais[i].act(agent_hosts[i]):
-                q = True
+        if(not agent_hosts[-1].getWorldState().is_mission_running):
+            q = True
+        else:
+            for i in range(NUM_AGENTS):
+                if not ais[i].act(agent_hosts[i]):
+                    q = True
 
 
-    print("MISSION END")
+    #print("MISSION END")
 
+    for i in range(NUM_AGENTS):
+        ais[i].finalize()
 
-
-
-    print("Waiting for mission to end ", end=' ')
+    #print("Waiting for mission to end ", end=' ')
     # Mission should have ended already, but we want to wait until all the various agent hosts
     # have had a chance to respond to their mission ended message.
     hasEnded = False
     while not hasEnded:
         hasEnded = True # assume all good
-        print(".", end=' ')
+        #print(".", end=' ')
         time.sleep(0.1)
         for ah in agent_hosts:
             world_state = ah.getWorldState()

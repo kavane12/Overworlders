@@ -11,7 +11,6 @@ INVENTORY = '''
         <InventoryItem slot="1" type="stone_axe" />
         <InventoryItem slot="2" type="bow" />
         <InventoryItem slot="9" type="arrow" quantity="64" />
-        <InventoryItem slot="8" type="shield" />
 
         <InventoryItem slot="36" type="iron_boots" />
         <InventoryItem slot="37" type="iron_leggings" />
@@ -22,8 +21,8 @@ INVENTORY = '''
 
 # Starting positions when # of players = 2
 DUELPOSITIONS = [
-'x="-15.5" y="204.0" z="0.5"',
-'x="15.5" y="204.0" z="0.5"'
+'x="-2.5" y="204.0" z="0.5"',
+'x="2.5" y="204.0" z="0.5"'
 ]
 
 
@@ -53,7 +52,7 @@ def playerXML(num_agents):
                 <AgentHandlers>
                     <ContinuousMovementCommands turnSpeedDegs="480"/>
                     <ChatCommands/>
-                    <MissionQuitCommands quitDescription="Player_2 has won"/>
+                    <MissionQuitCommands quitDescription="''' + playerName(i) + ''' has won"/>
                     <InventoryCommands/>
                     <ObservationFromHotBar/>
                     <ObservationFromNearbyEntities>
@@ -88,12 +87,13 @@ def getWorldXML(reset, num_agents):
                 <ServerHandlers>
                     <FlatWorldGenerator forceReset="'''+ reset +'''" generatorString="3;5*minecraft:air;2;" />
                     <DrawingDecorator>
-                        <DrawCuboid x1="-20" y1="199" z1="-20" x2="20" y2="227" z2="20" type="sandstone"/>
-                        <DrawCuboid x1="-19" y1="200" z1="-19" x2="19" y2="200" z2="19" type="grass"/>
-                        <DrawCuboid x1="-19" y1="201" z1="-19" x2="18" y2="247" z2="18" type="air"/>
+                        <DrawCuboid x1="-5" y1="198" z1="-5" x2="5" y2="227" z2="5" type="bedrock"/>
+                        <DrawCuboid x1="-4" y1="199" z1="-4" x2="4" y2="227" z2="4" type="sandstone"/>
+                        <DrawCuboid x1="-3" y1="200" z1="-3" x2="3" y2="200" z2="3" type="grass"/>
+                        <DrawCuboid x1="-3" y1="201" z1="-3" x2="3" y2="247" z2="3" type="air"/>
                         <DrawBlock x="0" y="226" z="0" type="fence"/>
                     </DrawingDecorator>
-                    <ServerQuitFromTimeUp timeLimitMs="1000000"/>
+                    <ServerQuitFromTimeUp timeLimitMs="60000"/>
                     <ServerQuitWhenAnyAgentFinishes />
                 </ServerHandlers>
             </ServerSection>
@@ -112,10 +112,7 @@ def getWorldXML(reset, num_agents):
             <AgentHandlers>
               	<ContinuousMovementCommands turnSpeedDegs="360"/>
               	<MissionQuitCommands/>
-              	<VideoProducer>
-                	<Width>640</Width>
-               	 <Height>640</Height>
-              	</VideoProducer>
+              	<ChatCommands/>
             </AgentHandlers>
         </AgentSection>
     '''

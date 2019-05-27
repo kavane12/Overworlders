@@ -1,88 +1,124 @@
-import json
-from common import deg, angleMod, relativeAngle, relativeDistance
+from random import random
+from Network import Network
+from AI import *
+import math
 
-EPSILON = 0.3   # The chance at picking a random action
-ALPHA   = 0.1   # The learning rate
-GAMMA   = 1.0   # The discount factor, closer to 0 = prefers immediate rewards, closer to 1 = longterm gains
+#Learning parameters
+ALPHA = 0.001   #Learn rate
+GAMMA = 0.8     #Discount factor
+EPSILON = 0.9   #Chance of random action
+EPS_MIN = 0.05
+EPS_DECAY = 0.992
+BATCH_SIZE = 2000
 
-Q_TABLE_FILE = None
+#Reward parameters
+OFF_WEIGHT = 1  #Multiplier on the reward for doing damage
+DEF_WEIGHT = .1 #Multiplier on the penalty for taking damage
 
-# NOTES FOR Q_TABLE STATES
-#   myHealth: {Low, Med, High}
-#   oppHealth: ^
-#   
-#   distance: {Close, Med, Far}
-#   
-#   myEquipped: {Sword, Axe, Shield} (Bow for later?)
-#   oppEquipped: ^
+ActionList = [
+    ('move', 1), ('move', 0), ('move', -1),
+    ('strafe', 1), ('strafe', 0), ('strafe', -1),
+    ('turn', 1), ('turn', 0.2), ('turn', 0.07), ('turn', 0), ('turn', -0.07), ('turn', -0.2), ('turn', -1),
+    #('pitch', 0.5), ('pitch', 0.15), ('pitch', 0.05), ('pitch', 0), ('pitch', -0.05), ('pitch', -0.15), ('pitch', -0.5),
+    ('use', 0), ('use', 1),
+    ('attack', 1)#,  #attack and jump are implemented as noncontinuous actions. The agent does not have to choose
+    #('jump', 1)     #to stop performing them, instead they will only happen once
+]
 
+ActionLen = len(ActionList)
+StateLen = 10
 
-class QLearningAI:
-    def __init__(self, name):
-        self.name = name
-        self.life = 20
-        self.opponents = {}
+class QLearningAI(AI):
+    def __init__(self, saveNet = None, loadNet = None):
+        AI.__init__(self)
+        self.net = Network(StateLen, ActionLen, ALPHA, GAMMA, EPSILON, EPS_MIN, EPS_DECAY, BATCH_SIZE)
+        if loadNet != None:
+            self.net.load(loadNet)
+        self.saveNet = saveNet
+        self.counter = 0
 
+    def stateList(self):
+        state = [
+            self.life / 20,
+            #self.yPos,
+            #self.pitch / 90,
+            self.opponents[0]['angle'] / 180,
+            self.opponents[0]['dist'] / 40,
+            #self.opponents[0]['y'],
+            self.opponents[0]['yaw'] / 180,
+            #self.opponents[0]['pitch'] / 90,
+            self.opponents[0]['life'] / 20,
+            time() - self.lastAttackTime,
+            self.moving,
+            self.strafing,
+            self.turning,
+            #self.pitching,
+            self.using
+        ]
+        assert len(state) == StateLen
+        return state
 
-        # Q-table parameters
-        self.epsilon = EPSILON
-        self.alpha = ALPHA
-        self.gamma = GAMMA
-        
-        self.q_table = {}
-        if Q_TABLE_FILE:
-            with open(Q_TABLE_FILE) as f:
-                self.q_table = json.load(f)
-
+    def takeAction(self, a, agentHost):
+        action = ActionList[a]
+        agentHost.sendCommand(action[0] + ' {}'.format(action[1]))
+        if(action[0] == 'move'):
+            self.moving = action[1]
+        elif(action[0] == 'strafe'):
+            self.strafing = action[1]
+        elif(action[0] == 'turn'):
+            self.turning = action[1]
+        elif(action[0] == 'pitch'):
+            self.pitching = action[1]
+        elif(action[0] == 'attack'):
+            agentHost.sendCommand('attack 0')
+        elif(action[0] == 'use'):
+            self.using = action[1]
+        elif(action[0] == 'jump'):
+            agentHost.sendCommand('jump 0')
 
     def initialize(self, agentHost):
-        equippedShield = False
+        #additional state information
+        AI.initialize(self, agentHost)
+        self.moving = 0
+        self.strafing = 0
+        self.turning = 0
+        self.pitching = 0
+        self.using = 0
+        self.lastState = None
+        self.lastAction = None
+        self.rewardList = []
 
-        if not equippedShield:
-            worldState = agentHost.getWorldState()
-            if worldState.number_of_observations_since_last_state > 0:
-                agentHost.sendCommand("chat " + "/replaceitem entity " + self.name + " slot.weapon.offhand minecraft:shield")
-                equippedShield = True
-            else:
-                return False
+    def run(self, agentHost):
+        self.counter += 1
+        state = self.stateList()
+        action = self.net.getAction(state)
+        reward = self.calcReward()
+        if self.lastState != None and self.lastAction != None:
+            self.net.log(self.lastState, self.lastAction, state, reward)
+        self.takeAction(action, agentHost)
+        self.lastAction = action
+        self.lastState = state
 
-        return True
+    def calcReward(self):
+        '''
+        elif abs(self.opponents[0]['angle']) < 20 or abs(self.pitch) < 20:
+            reward = .2
+        else:
+            reward = 0'''
 
+        reward = OFF_WEIGHT * (self.lastOppLife - self.opponents[0]['life']) +\
+            DEF_WEIGHT * (self.life - self.lastLife)
 
-    def act(self, agentHost):
-        worldState = agentHost.getWorldState()
+        self.rewardList.append(reward)
+        return reward
+    
+    def finalize(self):
+        print(self.name, "Average reward:", sum(self.rewardList) / len(self.rewardList))
+        print("Max reward:", max(self.rewardList), "Min reward:", min(self.rewardList))
+        for i in range(5):
+            self.net.train()
+        self.net.update()
+        if self.saveNet != None:
+            self.net.save(self.saveNet)
 
-        if worldState.number_of_observations_since_last_state > 0:
-
-            obs = json.loads(worldState.observations[-1].text)
-
-            self.life = obs["Life"]
-            xPos = obs["XPos"]
-            yPos = obs["YPos"]
-            zPos = obs["ZPos"]
-            pitch = obs["Pitch"]
-            yaw = obs["Yaw"]
-            entities = obs["entities"]
-
-            for e in entities:
-                name = e['name']
-                if name != self.name:       # Will not see the Observer due to y limit on entity observation
-                    dx = e['x'] - xPos
-                    dz = e['z'] - zPos
-                    a = deg(relativeAngle(dx, dz))
-                    self.opponents[name] = {
-                        'angle':angleMod(a - yaw),          # Angle to opponent in degrees, positive is clockwise
-                        'dist': relativeDistance(dx, dz),   # Horizontal distance to opponent
-                        'y':e['y'],                         # Vertical position of oppoent
-                        'yaw':angleMod(e['yaw'] - a + 180), # Relative yaw of opponent (0 = looking towards agent, 90 = looking to the right of agent, -90 = looking to the left)              
-                        'pitch':e['pitch'],
-                        'life':e['life'],
-                    }
-            #if(self.name == 'Player_1'):
-                #o = self.opponents['Player_2']
-                #print(o['angle'], o['dist'], o['yaw'], o['y']) #debug code
-            if self.life <= 0:
-                return False
-
-            
-        return True
+        
