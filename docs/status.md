@@ -27,7 +27,7 @@ due to the continuous nature of the state space.
 
 The Deep Q learning implementation is a fairly standard approach, based on the one found in the last resource link below. It uses a neural network constructed with Keras to predict q values of actions given a state. Training is done on a replay memory, which contains sets of state, action, resulting state, and reward. The loss function for training the network is (Q(s, a) - q*)^2 where Q(s, a) is the network's current prediction for the value of action a in state s. q*, the target value of that action, is computed: q* = r + gamma * Q'(s', a'), where r is the reward recieved, s' is the observed resulting state, gamma is the discount factor, Q' is a saved past version of the predition network (updated periodically), and a' is the optimal action in s' as predicted by Q'.
 
-![alt text](https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/deep_q_learning.png)
+![alt text](https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/deep-q-learning.png)
 
 The state space contains several variables: 
 
