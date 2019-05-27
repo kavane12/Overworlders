@@ -23,6 +23,7 @@ as unchanged mechanics to defeat other players of equal level of equipment.
 Since there are many variables that can influence the outcome of PvP (player vs player)
 combat, we used a Deep Q-learning approach to create our AI.
 
+
 **Evaluation**
 
 
@@ -30,4 +31,5 @@ combat, we used a Deep Q-learning approach to create our AI.
 
 
 **Resources Used**
+
 https://github.com/microsoft/malmo/tree/master/Malmo/samples/Python_examples/multi_agent_test.py

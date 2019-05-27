@@ -65,7 +65,7 @@ def playerXML(num_agents):
 
 	return playersXML
 
-def getWorldXML(reset, num_agents):
+def getWorldXML(reset, num_agents, arenaSize):
 	xml = '''
     	<?xml version="1.0" encoding="UTF-8" standalone="no" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ?>
         <Mission xmlns="http://ProjectMalmo.microsoft.com">
@@ -73,7 +73,7 @@ def getWorldXML(reset, num_agents):
                 <Summary>Fight to the death!</Summary>
             </About>
             <ModSettings>
-                <MsPerTick>50</MsPerTick>
+                <MsPerTick>10</MsPerTick>
             </ModSettings>
             <ServerSection>
                 <ServerInitialConditions>
@@ -87,10 +87,10 @@ def getWorldXML(reset, num_agents):
                 <ServerHandlers>
                     <FlatWorldGenerator forceReset="'''+ reset +'''" generatorString="3;5*minecraft:air;2;" />
                     <DrawingDecorator>
-                        <DrawCuboid x1="-5" y1="198" z1="-5" x2="5" y2="227" z2="5" type="bedrock"/>
-                        <DrawCuboid x1="-4" y1="199" z1="-4" x2="4" y2="227" z2="4" type="sandstone"/>
-                        <DrawCuboid x1="-3" y1="200" z1="-3" x2="3" y2="200" z2="3" type="grass"/>
-                        <DrawCuboid x1="-3" y1="201" z1="-3" x2="3" y2="247" z2="3" type="air"/>
+                        <DrawCuboid x1="-''' + str(arenaSize+2) + '''" y1="198" z1="-''' + str(arenaSize+2) + '''" x2="''' + str(arenaSize+2) + '''" y2="227" z2="''' + str(arenaSize+2) + '''" type="bedrock"/>
+                        <DrawCuboid x1="-''' + str(arenaSize+1) + '''" y1="199" z1="-''' + str(arenaSize+1) + '''" x2="''' + str(arenaSize+1) + '''" y2="227" z2="''' + str(arenaSize+1) + '''" type="sandstone"/>
+                        <DrawCuboid x1="-''' + str(arenaSize) + '''" y1="200" z1="-''' + str(arenaSize) + '''" x2="''' + str(arenaSize) + '''" y2="200" z2="''' + str(arenaSize) + '''" type="grass"/>
+                        <DrawCuboid x1="-''' + str(arenaSize) + '''" y1="201" z1="-''' + str(arenaSize) + '''" x2="''' + str(arenaSize) + '''" y2="247" z2="''' + str(arenaSize) + '''" type="air"/>
                         <DrawBlock x="0" y="226" z="0" type="fence"/>
                     </DrawingDecorator>
                     <ServerQuitFromTimeUp timeLimitMs="60000"/>
