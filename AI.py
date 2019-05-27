@@ -9,13 +9,14 @@ class AI:
         self.yPos = 0
         self.pitch = 0
         self.opponents = []
-        self.lastAttackTime = time()
 
+        
+    def initialize(self, agentHost):
         #Previous state info (for calculating rewards)
         self.lastLife = 20
         self.lastOppLife = 20
+        self.lastAttackTime = time()
         
-    def initialize(self, agentHost):
         worldState = agentHost.getWorldState()
         while worldState.number_of_observations_since_last_state <= 0:
             worldState = agentHost.getWorldState()
