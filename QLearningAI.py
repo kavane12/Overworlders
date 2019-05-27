@@ -5,20 +5,20 @@ import math
 
 #Learning parameters
 ALPHA = 0.001   #Learn rate
-GAMMA = 0.8     #Discount factor
-EPSILON = 0.9   #Chance of random action
+GAMMA = 0.6     #Discount factor
+EPSILON = 0.3   #Chance of random action
 EPS_MIN = 0.05
-EPS_DECAY = 0.992
+EPS_DECAY = 0.99
 BATCH_SIZE = 2000
 
 #Reward parameters
-OFF_WEIGHT = 1  #Multiplier on the reward for doing damage
+OFF_WEIGHT = 10  #Multiplier on the reward for doing damage
 DEF_WEIGHT = .1 #Multiplier on the penalty for taking damage
 
 ActionList = [
     ('move', 1), ('move', 0), ('move', -1),
     ('strafe', 1), ('strafe', 0), ('strafe', -1),
-    ('turn', 1), ('turn', 0.2), ('turn', 0.07), ('turn', 0), ('turn', -0.07), ('turn', -0.2), ('turn', -1),
+    ('turn', 0.5), ('turn', 0.15), ('turn', 0.05), ('turn', 0), ('turn', -0.05), ('turn', -0.15), ('turn', -0.5),
     #('pitch', 0.5), ('pitch', 0.15), ('pitch', 0.05), ('pitch', 0), ('pitch', -0.05), ('pitch', -0.15), ('pitch', -0.5),
     ('use', 0), ('use', 1),
     ('attack', 1)#,  #attack and jump are implemented as noncontinuous actions. The agent does not have to choose
@@ -100,14 +100,22 @@ class QLearningAI(AI):
         self.lastState = state
 
     def calcReward(self):
-        '''
-        elif abs(self.opponents[0]['angle']) < 20 or abs(self.pitch) < 20:
-            reward = .2
-        else:
-            reward = 0'''
+        reward = 0.0
+        
+        if abs(self.opponents[0]['angle']) <= 30:
+            reward += (30 - abs(self.opponents[0]['angle'])) / 150
 
-        reward = OFF_WEIGHT * (self.lastOppLife - self.opponents[0]['life']) +\
+        if self.opponents[0]['dist'] < 4:
+            reward += .2
+
+        combatReward = OFF_WEIGHT * (self.lastOppLife - self.opponents[0]['life']) +\
             DEF_WEIGHT * (self.life - self.lastLife)
+
+        if combatReward != 0:
+            print("Reward:", reward, " Combat:", combatReward)
+            reward += combatReward
+            print("ANGLE:", self.opponents[0]['angle'])
+            print("DIST :", self.opponents[0]['dist'])
 
         self.rewardList.append(reward)
         return reward

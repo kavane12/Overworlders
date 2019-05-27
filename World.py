@@ -91,7 +91,6 @@ def getWorldXML(reset, num_agents, arenaSize):
                         <DrawCuboid x1="-''' + str(arenaSize+1) + '''" y1="199" z1="-''' + str(arenaSize+1) + '''" x2="''' + str(arenaSize+1) + '''" y2="227" z2="''' + str(arenaSize+1) + '''" type="sandstone"/>
                         <DrawCuboid x1="-''' + str(arenaSize) + '''" y1="200" z1="-''' + str(arenaSize) + '''" x2="''' + str(arenaSize) + '''" y2="200" z2="''' + str(arenaSize) + '''" type="grass"/>
                         <DrawCuboid x1="-''' + str(arenaSize) + '''" y1="201" z1="-''' + str(arenaSize) + '''" x2="''' + str(arenaSize) + '''" y2="247" z2="''' + str(arenaSize) + '''" type="air"/>
-                        <DrawBlock x="0" y="226" z="0" type="fence"/>
                     </DrawingDecorator>
                     <ServerQuitFromTimeUp timeLimitMs="60000"/>
                     <ServerQuitWhenAnyAgentFinishes />
@@ -104,10 +103,10 @@ def getWorldXML(reset, num_agents, arenaSize):
 
     # Add the camera (player)
 	xml += '''
-        <AgentSection mode="Creative">
+        <AgentSection mode="Spectator">
             <Name>Observer</Name>
             <AgentStart>
-              	<Placement x="0.5" y="228" z="0.5" pitch="90"/>
+              	<Placement x="0.5" y="''' + str(201.0+arenaSize) + '''" z="0.5" pitch="90"/>
             </AgentStart>
             <AgentHandlers>
               	<ContinuousMovementCommands turnSpeedDegs="360"/>

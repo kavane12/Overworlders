@@ -58,8 +58,8 @@ ARENA_SIZE = 10
 agent_hosts += [MalmoPython.AgentHost() for x in range(1, NUM_AGENTS + 1) ]
 
 # Create AI objects:
-ais = [QLearningAI('T1.dqn', 'T1.dqn'),
-    QLearningAI('T2.dqn', 'T2.dqn')]
+ais = [QLearningAI('test02.dqn', 'test02.dqn'),
+    PassiveAI()]
 
 # Set up debug output:
 for ah in agent_hosts:
@@ -144,7 +144,7 @@ for x in range(10000, 10000 + NUM_AGENTS + 1):
     client_pool.add( MalmoPython.ClientInfo('127.0.0.1', x) )
 
 
-num_missions = 1000
+num_missions = 10000
 for mission_no in range(1, num_missions+1):
     print("Running mission #" + str(mission_no))
 
