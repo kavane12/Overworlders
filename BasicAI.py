@@ -1,7 +1,7 @@
 from AI import *
 
     # Parameters:
-attackSpeed = 1.0   # Max attacks per second
+attackSpeed = 1.5   # Max attacks per second
 turnAngle = 80      # Angle at which agent will turn at full speed. If set too low, agent will oscillate
 moveDist = 3        # Agent will try to stay within this distance of enemy
 attackAngle = 10    # Maximum angle at which agent will try to attack

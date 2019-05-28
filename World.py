@@ -65,7 +65,7 @@ def playerXML(num_agents):
 
 	return playersXML
 
-def getWorldXML(reset, num_agents, arenaSize):
+def getWorldXML(reset, num_agents, arenaSize, speedMul):
 	xml = '''
     	<?xml version="1.0" encoding="UTF-8" standalone="no" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ?>
         <Mission xmlns="http://ProjectMalmo.microsoft.com">
@@ -73,7 +73,7 @@ def getWorldXML(reset, num_agents, arenaSize):
                 <Summary>Fight to the death!</Summary>
             </About>
             <ModSettings>
-                <MsPerTick>10</MsPerTick>
+                <MsPerTick>''' + str(50 // speedMul) + '''</MsPerTick>
             </ModSettings>
             <ServerSection>
                 <ServerInitialConditions>

@@ -26,6 +26,7 @@ import json
 import math
 import uuid
 
+
 from World import getWorldXML, playerName
 from BasicAI import BasicAI
 from PassiveAI import PassiveAI
@@ -53,13 +54,14 @@ INTEGRATION_TEST_MODE = agent_hosts[0].receivedArgument("test")
 agents_requested = agent_hosts[0].getIntArgument("agents")
 NUM_AGENTS = max(2, agents_requested - 1) # Will be NUM_AGENTS robots running around, plus one static observer.
 ARENA_SIZE = 10
+SPEED = 1   #simulation speed multiplier
 
 # Create the rest of the agent hosts - one for each robot, plus one to give a bird's-eye view:
 agent_hosts += [MalmoPython.AgentHost() for x in range(1, NUM_AGENTS + 1) ]
 
 # Create AI objects:
-ais = [QLearningAI('test02.dqn', 'test02.dqn'),
-    PassiveAI()]
+ais = [QLearningAI(SPEED, 'new3a.txt', 'new3a', 'new2-53.dqn'),
+    BasicAI()]
 
 # Set up debug output:
 for ah in agent_hosts:
@@ -149,7 +151,7 @@ for mission_no in range(1, num_missions+1):
     print("Running mission #" + str(mission_no))
 
     # Create mission xml - use forcereset if this is the first mission.
-    my_mission = MalmoPython.MissionSpec(getWorldXML("true" if mission_no == 1 else "false", NUM_AGENTS, ARENA_SIZE), True)
+    my_mission = MalmoPython.MissionSpec(getWorldXML("true" if mission_no == 1 else "false", NUM_AGENTS, ARENA_SIZE, SPEED), True)
     # Generate an experiment ID for this mission.
     # This is used to make sure the right clients join the right servers -
     # if the experiment IDs don't match, the startMission request will be rejected.
