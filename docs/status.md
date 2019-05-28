@@ -53,10 +53,14 @@ At this point, we switched over to training against the basic AI. For this train
 
 By now, we had already reached out goals for the status report, but as an additional test, we tried increasing the basic AI's attack speed to 1.5 attacks/second. This proved more difficult for our AI to handle, and the improvement, even over more than 100 iterations, was less noticeable. We do, however, have plans to further improve out agent's performance, as outlined in the section below.
 
-![Training data vs. basic AI 2](https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/basicTraining2.png)
+![Training data vs. basic AI 2](https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/BasicTraining2.png)
 
 **Remaining Goals & Challenges**
+As mentioned previously, we are using a minimal subset of our planned action and state spaces. Going forward, our goal is to implement additional actions allowing the agent to change its pitch (look up and down), jump, switch hotbar slots so that it can use a bow as well as the sword, and block with its shield. There will also be changes to the state space as necessary to accomodate these actions.
 
+With regards to the reward function, the 'guiding rewards' which we gave to the agent are somewhat arbitrary and artificial, so we will experiment with training without them, to allow the agent to learn behaviors more organically.
+
+Our final goal will be to train out AI against another deep Q learning AI, or potentially even against human players, so that it can learn more complex behaviors and strategies than it otherwise would, when training against a hard coded AI which behaves deterministically.
 
 **Resources Used**
 Libraries:
