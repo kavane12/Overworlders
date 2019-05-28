@@ -51,9 +51,9 @@ At this point, we switched over to training against the basic AI. For this train
 
 ![Training data vs. basic AI 1](https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/basicTraining1.png)
 
-By now, we had already reached out goals for the status report, but as an additional test, we tried increasing the basic AI's attack speed to 1.5 attacks/second. This proved more difficult for our AI to handle, and there was less noticeably improvement.
+By now, we had already reached out goals for the status report, but as an additional test, we tried increasing the basic AI's attack speed to 1.5 attacks/second. This proved more difficult for our AI to handle, and the improvement, even over more than 100 iterations, was less noticeable. We do, however, have plans to further improve out agent's performance, as outlined in the section below.
 
-![Training data vs. basic AI 2]
+![Training data vs. basic AI 2](https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/basicTraining2.png)
 
 **Remaining Goals & Challenges**
 
