@@ -8,7 +8,7 @@ title:	Status
 <p align="center">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/d3RGnFj9Nww" frameborder="0" allowfullscreen></iframe>
 </p>
-
+<br/>
 **Project Summary**
 
 The goal of this project is to create an AI capable of combat with other players. 
@@ -23,7 +23,7 @@ and can disable shields for a period of time
 Our implementation of the AI intends to make use of all features introduced above as well
 as unchanged mechanics to defeat other players of equal level of equipment.
 
-
+<br/>
 **Approach**
 
 We initially considered using a genetic algorithm to train our AI. However, we decided
@@ -48,7 +48,7 @@ the agent's current forward/backward movement direction, its current left/right 
 
 The main reward structure used consists of rewarding the agent when it does damage (proportional to the damage done), and penalizing it when it takes damage (again proprotionally). Because we want to train the agent primarily to fight, rather than to run away, we made the reward 10 times larger than the penalty. In addition to these main rewards, we added additional smaller rewards to guide the agent during its initial training. These included a reward for being in range of the enemy, and another for looking in its general direction. When both these conditions are met, it gets an additional reward, plus another if it makes a sufficiently charged attack. If the agent, however, at any point makes an attack that is not sufficiently charged, it incurs a small penalty. This is because with the current Minecraft combat system, attacks will do very little to no damage if attack commands are issued too fast; instead the weapon needs to be charged up for some duration between attacks.
 
-
+<br/>
 **Evaluation**
 
 In addition to the learning agent, we also made a hard coded 'basic AI' for it to fight against, for evaluation and training purposes. To start off our agent's training, we pitted it against an inactive enemy agent, or 'passive AI', which only turns to look at its opponent, but does not move on its own or attack. After about 100 training steps, the learning agent became competent at killing the passive AI. Its performance is shown below, measured in terms of damage done, and average reward recieved. 
@@ -63,7 +63,7 @@ By now, we had already reached out goals for the status report, but as an additi
 
 ![Training data vs. basic AI 2](https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/BasicTraining2.png)
 
-
+<br/>
 **Remaining Goals & Challenges**
 
 As mentioned previously, we are using a minimal subset of our planned action and state spaces. Going forward, our goal is to implement additional actions allowing the agent to change its pitch (look up and down), jump, switch hotbar slots so that it can use a bow as well as the sword, and block with its shield. There will also be changes to the state space as necessary to accomodate these actions.
@@ -72,16 +72,16 @@ With regards to the reward function, the 'guiding rewards' which we gave to the 
 
 Our final goal will be to train out AI against another deep Q learning AI, or potentially even against human players, so that it can learn more complex behaviors and strategies than it otherwise would, when training against a hard coded AI which behaves deterministically.
 
-
+<br/>
 **Resources Used**
-
+<br/>
 Libraries:
 
 Tensorflow/Keras
 
 Malmo
 
-
+<br/>
 Documentation:
 
 http://microsoft.github.io/malmo/0.30.0/Documentation/index.html
@@ -90,7 +90,7 @@ http://microsoft.github.io/malmo/0.30.0/Schemas/Mission.html
 
 https://keras.io/
 
-
+<br/>
 Other resources:
 
 https://github.com/microsoft/malmo/tree/master/Malmo/samples/Python_examples/multi_agent_test.py
