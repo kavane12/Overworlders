@@ -42,7 +42,9 @@ the agent's current forward/backward movement direction, its current left/right 
 
 The main reward structure used consists of rewarding the agent when it does damage (proportional to the damage done), and penalizing it when it takes damage (again proprotionally). Because we want to train the agent primarily to fight, rather than to run away, we made the reward 10 times larger than the penalty. In addition to these main rewards, we added additional smaller rewards to guide the agent during its initial training. These included a reward for being in range of the enemy, and another for looking in its general direction. When both these conditions are met, it gets an additional reward, plus another if it makes a sufficiently charged attack. If the agent, however, at any point makes an attack that is not sufficiently charged, it incurs a small penalty. This is because with the current Minecraft combat system, attacks will do very little to no damage if attack commands are issued too fast; instead the weapon needs to be charged up for some duration between attacks.
 
+
 **Evaluation**
+
 In addition to the learning agent, we also made a hard coded 'basic AI' for it to fight against, for evaluation and training purposes. To start off our agent's training, we pitted it against an inactive enemy agent, or 'passive AI', which only turns to look at its opponent, but does not move on its own or attack. After about 100 training steps, the learning agent became competent at killing the passive AI. Its performance is shown below, measured in terms of damage done, and average reward recieved. 
 
 ![Training data vs. passive AI](https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/passiveTraining.png)
@@ -51,21 +53,40 @@ At this point, we switched over to training against the basic AI. For this train
 
 ![Training data vs. basic AI 1](https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/basicTraining1.png)
 
-By now, we had already reached out goals for the status report, but as an additional test, we tried increasing the basic AI's attack speed to 1.5 attacks/second. This proved more difficult for our AI to handle, and there was less noticeably improvement.
+By now, we had already reached out goals for the status report, but as an additional test, we tried increasing the basic AI's attack speed to 1.5 attacks/second. This proved more difficult for our AI to handle, and the improvement, even over more than 100 iterations, was less noticeable. We do, however, have plans to further improve out agent's performance, as outlined in the section below.
 
-![Training data vs. basic AI 2]
+![Training data vs. basic AI 2](https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/BasicTraining2.png)
+
 
 **Remaining Goals & Challenges**
 
+As mentioned previously, we are using a minimal subset of our planned action and state spaces. Going forward, our goal is to implement additional actions allowing the agent to change its pitch (look up and down), jump, switch hotbar slots so that it can use a bow as well as the sword, and block with its shield. There will also be changes to the state space as necessary to accomodate these actions.
+
+With regards to the reward function, the 'guiding rewards' which we gave to the agent are somewhat arbitrary and artificial, so we will experiment with training without them, to allow the agent to learn behaviors more organically.
+
+Our final goal will be to train out AI against another deep Q learning AI, or potentially even against human players, so that it can learn more complex behaviors and strategies than it otherwise would, when training against a hard coded AI which behaves deterministically.
+
 
 **Resources Used**
+
 Libraries:
+
 Tensorflow/Keras
+
 Malmo
 
+
+Documentation:
+
 http://microsoft.github.io/malmo/0.30.0/Documentation/index.html
+
 http://microsoft.github.io/malmo/0.30.0/Schemas/Mission.html
+
 https://keras.io/
 
+
+Other resources:
+
 https://github.com/microsoft/malmo/tree/master/Malmo/samples/Python_examples/multi_agent_test.py
+
 https://keon.io/deep-q-learning/
