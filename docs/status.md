@@ -3,6 +3,11 @@ layout:	default
 title:	Status
 ---
 
+**Video**
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/QOfay_gvvJ0" frameborder="0" allowfullscreen></iframe>
+
+
 **Project Summary**
 
 The goal of this project is to create an AI capable of combat with other players. 
