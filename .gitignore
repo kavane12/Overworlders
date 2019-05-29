@@ -6,3 +6,4 @@ _site/
 /__pycache__/
 *.dqn
 *.pyc
+*.txt

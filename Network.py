@@ -7,7 +7,7 @@ class Network:
     def __init__(self, numInputs, numOutputs, lr, gamma, eps, epsMin, epsDecay, batchSize):
         self.numInputs = numInputs
         self.numOutputs = numOutputs
-        self.memory = deque(maxlen = 50000)
+        self.memory = deque(maxlen = 20000)
         self.lr = lr
         self.gamma = gamma
         self.eps = eps
