@@ -5,19 +5,19 @@ import random
 # Inventory:	9-38
 # Armor:		36-39
 # Offhand:		???
-INVENTORY = '''
+
+def inventory(playerNum):
+    return '''
     <Inventory>
         <InventoryItem slot="0" type="stone_sword" />
         <InventoryItem slot="1" type="stone_axe" />
         <InventoryItem slot="2" type="bow" />
         <InventoryItem slot="9" type="arrow" quantity="64" />
-
         <InventoryItem slot="36" type="iron_boots" />
         <InventoryItem slot="37" type="iron_leggings" />
         <InventoryItem slot="38" type="iron_chestplate" />
-        <InventoryItem slot="39" type="iron_helmet" />
-    </Inventory>
-'''
+        <InventoryItem slot="39" type="''' + ("golden_helmet" if playerNum == 0 else "iron_helmet")  + '''"/>
+    </Inventory>'''
 
 # Starting positions when # of players = 2
 DUELPOSITIONS = [
@@ -47,7 +47,7 @@ def playerXML(num_agents):
                 <Name>''' + playerName(i) + '''</Name>
                 <AgentStart>
                     <Placement ''' + playerPlacement(i, num_agents) + '''/>
-                   	''' + INVENTORY + '''
+                   	''' + inventory(i) + '''
                 </AgentStart>
                 <AgentHandlers>
                     <ContinuousMovementCommands turnSpeedDegs="480"/>
