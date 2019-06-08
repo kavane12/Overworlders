@@ -15,6 +15,8 @@ class AI:
         self.lastLife = 20
         self.lastOppLife = 20
         self.slotSelected = 0
+        self.using = 0
+        self.useStartTime = time()
         self.lastAttackTime = time()
         worldState = agentHost.getWorldState()
         while worldState.number_of_observations_since_last_state <= 0:

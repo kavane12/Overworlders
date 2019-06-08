@@ -108,8 +108,6 @@ class QLearningAI(AI):
         self.strafing = 0
         self.turning = 0
         self.pitching = 0
-        self.using = 0
-        self.useStartTime = time()
         self.attacked = 0
         self.lastState = None
         self.lastAction = None
