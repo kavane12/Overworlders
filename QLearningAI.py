@@ -18,11 +18,14 @@ DEF_WEIGHT = 2 #Multiplier on the penalty for taking damage
 ActionList = [
     ('move', 1), ('move', 0), ('move', -1),
     ('strafe', 1), ('strafe', 0), ('strafe', -1),
-    ('turn', .7), ('turn', 0.4), ('turn', 0.2), ('turn', 0), ('turn', -0.2), ('turn', -0.4), ('turn', -.7),
-    #('pitch', 0.5), ('pitch', 0.15), ('pitch', 0.05), ('pitch', 0), ('pitch', -0.05), ('pitch', -0.15), ('pitch', -0.5),
-    #('use', 0), ('use', 1),
-    ('attack', 1)#,  #attack and jump are implemented as noncontinuous actions. The agent does not have to choose
-    #('jump', 1)     #to stop performing them, instead they will only happen once
+    ('turn', 1), ('turn', .6), ('turn', 0.4), ('turn', 0.2), ('turn', 0),
+    ('turn', -0.2), ('turn', -0.4), ('turn', -.6), ('turn', -1),
+    ('pitch', 0.5), ('pitch', 0.2), ('pitch', 0.1), ('pitch', 0),
+    ('pitch', -0.1), ('pitch', -0.2), ('pitch', -0.5),
+    ('use', 0), ('use', 1),
+    ('attack', 1),  #attack and jump are implemented as noncontinuous actions. The agent does not have to choose
+    ('jump', 1),    #to stop performing them, instead they will only happen once
+    ('hotbar.1', 1), ('hotbar.2', 1)
 ]
 
 ActionLen = len(ActionList)
@@ -44,21 +47,27 @@ class QLearningAI(AI):
 
     def stateList(self):
         state = [
-            #self.life / 20,
-            #self.yPos,
-            #self.pitch / 90,
+            self.life / 20,
+            self.yPos,
+            self.pitch / 90,
             math.cos(rad(self.opponents[0]['angle'])) * self.opponents[0]['dist'] / 10,
             math.sin(rad(self.opponents[0]['angle'])) * self.opponents[0]['dist'] / 10,
-            #self.opponents[0]['y'],
-            #self.opponents[0]['yaw'] / 180,
-            #self.opponents[0]['pitch'] / 90,
-            #self.opponents[0]['life'] / 20,
+            self.opponents[0]['y'],
+            math.sin(rad(self.opponents[0]['yaw'])),
+            math.cos(rad(self.opponents[0]['yaw'])),
+            self.opponents[0]['pitch'] / 90,
+            self.opponents[0]['life'] / 20,
+            self.opponents[0]['weapon'],
+            self.opponents[0]['using'],
+            (time() - self.opponents[0].useStartTime) if self.opponents[0].using else 0,
             min((time() - self.lastAttackTime) * self.timeMult, .5),
+            (time() - self.useStartTime) if self.using else 0,
             self.moving,
             self.strafing,
             self.turning
-            #self.pitching,
-            #self.using
+            self.pitching,
+            self.using,
+            self.slotSelected
         ]
         assert len(state) == StateLen
         return state
@@ -77,14 +86,20 @@ class QLearningAI(AI):
             self.pitching = action[1]
         elif(action[0] == 'attack'):
             agentHost.sendCommand('attack 0')
-            self.attacked = (time() - self.lastAttackTime) * self.timeMult
-            if self.attacked > 0.5:
-                self.attacked = 0.5
+            self.attacked =  min((time() - self.lastAttackTime) * self.timeMult, 0.5)
             self.lastAttackTime = time()
         elif(action[0] == 'use'):
             self.using = action[1]
+            if(action[1] == 1):
+                self.useStartTime = time()
         elif(action[0] == 'jump'):
             agentHost.sendCommand('jump 0')
+        elif(action[0] == 'hotbar.1'):
+            agentHost.sendCommand('hotbar.1 0')
+            self.slotSelected = 0
+        elif(action[0] == 'hotbar.2'):
+            agentHost.sendCommand('hotbar.2 0')
+            self.slotSelected = 1
 
     def initialize(self, agentHost):
         #additional state information
@@ -94,6 +109,7 @@ class QLearningAI(AI):
         self.turning = 0
         self.pitching = 0
         self.using = 0
+        self.useStartTime = time()
         self.attacked = 0
         self.lastState = None
         self.lastAction = None

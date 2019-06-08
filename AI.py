@@ -9,28 +9,33 @@ class AI:
         self.yPos = 0
         self.pitch = 0
         self.opponents = []
-
         
     def initialize(self, agentHost):
         #Previous state info (for calculating rewards)
         self.lastLife = 20
         self.lastOppLife = 20
+        self.slotSelected = 0
         self.lastAttackTime = time()
-        
         worldState = agentHost.getWorldState()
         while worldState.number_of_observations_since_last_state <= 0:
             worldState = agentHost.getWorldState()
         obs = json.loads(worldState.observations[-1].text)
         self.name = obs["Name"]
-        agentHost.sendCommand("chat " + "/replaceitem entity " + self.name + " slot.weapon.offhand minecraft:shield")
-
+        agentHost.sendCommand("hotbar.3 1")
+        agentHost.sendCommand("hotbar.3 0")
+        agentHost.sendCommand("swapHands 1")
+        agentHost.sendCommand("swapHands 0")
+        agentHost.sendCommand("hotbar.1 1")
+        agentHost.sendCommand("hotbar.1 0")
+        agentHost.sendCommand("sprint 1")
+        
     def finalize(self):   #virtual function for any code that needs to be run on mission end
         pass
 
     def run(self, agentHost):   #virtual function where an AI's behavior should be implemented
         pass
 
-    def act(self, agentHost):
+    def act(self, agentHost, AIs):
         worldState = agentHost.getWorldState()
         if worldState.number_of_observations_since_last_state > 0:
             obs = json.loads(worldState.observations[-1].text)
@@ -59,6 +64,12 @@ class AI:
                         'pitch':e['pitch'],
                         'life':e['life']
                     })
+                    for ai in AIs:
+                        if ai.name == name:
+                            self.opponents[-1]['weapon'] = ai.slotSelected
+                            self.opponents[-1]['using'] = ai.using
+                            self.opponents[-1]['useTime'] = ai.self.useStartTime
+                            break
             self.opponents.sort(key = lambda x:x['dist'])
             self.run(agentHost)
             self.lastLife = self.life
