@@ -6,20 +6,21 @@ import math
 #Learning parameters
 ALPHA = 0.0002  #Learn rate
 GAMMA = 0.7     #Discount factor
-EPSILON = 1.0   #Chance of random action
+EPSILON = 0.9   #Chance of random action
 EPS_MIN = 0.05
-EPS_DECAY = 0.992
+EPS_DECAY = 0.995
 BATCH_SIZE = 2000
 
 #Reward parameters
 OFF_WEIGHT = 20     #Multiplier on the reward for doing damage
 DEF_WEIGHT = 2      #Multiplier on the penalty for taking damage
+ANGLE_WEIGHT = 0.5  #Multiplier on the reward for looking in the general direction of the opponent
 
 ActionList = [
     ('move', 1), ('move', 0), ('move', -1),
     ('strafe', 1), ('strafe', 0), ('strafe', -1),
-    ('turn', 1), ('turn', .6), ('turn', 0.4), ('turn', 0.2), ('turn', 0),
-    ('turn', -0.2), ('turn', -0.4), ('turn', -.6), ('turn', -1),
+    ('turn', 1), ('turn', 0.6), ('turn', 0.4), ('turn', 0.2), ('turn', 0),
+    ('turn', -0.2), ('turn', -0.4), ('turn', -0.6), ('turn', -1),
     ('pitch', 0.5), ('pitch', 0.2), ('pitch', 0.1), ('pitch', 0),
     ('pitch', -0.1), ('pitch', -0.2), ('pitch', -0.5),
     ('use', 0), ('use', 1),
@@ -100,9 +101,13 @@ class QLearningAI(AI):
         elif(action[0] == 'hotbar.1'):
             agentHost.sendCommand('hotbar.1 0')
             self.slotSelected = 0
+            agentHost.sendCommand('use 0')
+            self.using = 0
         elif(action[0] == 'hotbar.2'):
             agentHost.sendCommand('hotbar.2 0')
             self.slotSelected = 1
+            agentHost.sendCommand('use 0')
+            self.using = 0
 
     def initialize(self, agentHost):
         #additional state information
@@ -129,8 +134,8 @@ class QLearningAI(AI):
     def calcReward(self):
         # attackReward = 0.0
 
-        #distanceReward = 1 if self.opponents[0]['dist'] < 3.5 else 0
-        #angleReward = 1 - (self.opponents[0]['angle'] / 45)**2 if abs(self.opponents[0]['angle']) < 45 else 0
+        pitchReward = .5 if abs(self.pitch) < 30 else (-5 if abs(self.pitch) > 80 else 0)
+        angleReward = ANGLE_WEIGHT * ((1 - self.opponents[0]['angle'] / 30)**2 if abs(self.opponents[0]['angle']) < 30 else 0)
         #if self.attacked > 0.2:
         #     attackReward = self.attacked * 4 * distanceReward * angleReward
         # elif self.attacked != 0:
@@ -143,8 +148,9 @@ class QLearningAI(AI):
         combatReward = OFF_WEIGHT * (self.lastOppLife - self.opponents[0]['life']) +\
             DEF_WEIGHT * (self.life - self.lastLife)
 
-        # reward = 0.2 * (distanceReward + angleReward) + distanceReward * angleReward + attackReward + combatReward
-        reward = combatReward
+        reward = 0.2 * (pitchReward + angleReward) + combatReward
+        if pitchReward > 0:
+            reward += pitchReward * angleReward
 
         if combatReward != 0:
             print("HIT")
