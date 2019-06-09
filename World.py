@@ -10,8 +10,8 @@ def inventory(playerNum):
     return '''
     <Inventory>
         <InventoryItem slot="0" type="stone_sword" />
-        <InventoryItem slot="1" type="stone_axe" />
-        <InventoryItem slot="2" type="bow" />
+        <InventoryItem slot="1" type="bow" />
+        <InventoryItem slot="2" type="shield" />
         <InventoryItem slot="9" type="arrow" quantity="64" />
         <InventoryItem slot="36" type="iron_boots" />
         <InventoryItem slot="37" type="iron_leggings" />
@@ -54,6 +54,7 @@ def playerXML(num_agents):
                     <ChatCommands/>
                     <MissionQuitCommands quitDescription="''' + playerName(i) + ''' has won"/>
                     <InventoryCommands/>
+                    <HumanLevelCommands/>
                     <ObservationFromHotBar/>
                     <ObservationFromNearbyEntities>
                         <Range name="entities" xrange="40" yrange="5" zrange="40"/>

@@ -1,6 +1,8 @@
 import json
+import time
+
 from common import deg, rad, angleMod, relativeAngle, relativeDistance
-from time import time
+#from time import time
 
 class AI:
     def __init__(self):
@@ -16,8 +18,8 @@ class AI:
         self.lastOppLife = 20
         self.slotSelected = 0
         self.using = 0
-        self.useStartTime = time()
-        self.lastAttackTime = time()
+        self.useStartTime = time.time()
+        self.lastAttackTime = time.time()
         worldState = agentHost.getWorldState()
         while worldState.number_of_observations_since_last_state <= 0:
             worldState = agentHost.getWorldState()
@@ -25,6 +27,7 @@ class AI:
         self.name = obs["Name"]
         agentHost.sendCommand("hotbar.3 1")
         agentHost.sendCommand("hotbar.3 0")
+        time.sleep(1)
         agentHost.sendCommand("swapHands 1")
         agentHost.sendCommand("swapHands 0")
         agentHost.sendCommand("hotbar.1 1")
@@ -70,7 +73,7 @@ class AI:
                         if ai.name == name:
                             self.opponents[-1]['weapon'] = ai.slotSelected
                             self.opponents[-1]['using'] = ai.using
-                            self.opponents[-1]['useTime'] = ai.self.useStartTime
+                            self.opponents[-1]['useTime'] = ai.useStartTime
                             break
             self.opponents.sort(key = lambda x:x['dist'])
             self.run(agentHost)

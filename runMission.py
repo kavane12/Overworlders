@@ -60,8 +60,8 @@ SPEED = 1   #simulation speed multiplier
 agent_hosts += [MalmoPython.AgentHost() for x in range(1, NUM_AGENTS + 1) ]
 
 # Create AI objects:
-ais = [QLearningAI(SPEED, 'new3a.txt', 'new3a', 'new2-53.dqn'),
-    BasicAI()]
+ais = [QLearningAI(SPEED, 'Player_1_log.txt', 'Player_1_Train'),
+       QLearningAI(SPEED, 'Player_2_log.txt', 'Player_2_Train')]
 
 # Set up debug output:
 for ah in agent_hosts:
@@ -191,7 +191,7 @@ for mission_no in range(1, num_missions+1):
             q = True
         else:
             for i in range(NUM_AGENTS):
-                if not ais[i].act(agent_hosts[i]):
+                if not ais[i].act(agent_hosts[i], ais):
                     q = True
 
 

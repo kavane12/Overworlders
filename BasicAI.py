@@ -10,7 +10,7 @@ attackDist = 3.5    # Maximum distance at which agent will try to attack
 class BasicAI(AI):
     def run(self, agentHost):          
         enemy = self.opponents[0]
-        doAttack = time() - self.lastAttackTime > 1 / attackSpeed and abs(enemy['angle']) < attackAngle and enemy['dist'] < attackDist
+        doAttack = time.time() - self.lastAttackTime > 1 / attackSpeed and abs(enemy['angle']) < attackAngle and enemy['dist'] < attackDist
         turnSpd = enemy['angle'] / turnAngle if abs(enemy['angle']) < turnAngle else (1 if enemy['angle'] > 0 else -1)
         agentHost.sendCommand("turn {}".format(turnSpd))
         agentHost.sendCommand("move {}".format(1 if enemy['dist'] > moveDist else 0))
@@ -18,5 +18,5 @@ class BasicAI(AI):
         if(doAttack):
             agentHost.sendCommand("attack 1")
             agentHost.sendCommand("attack 0")
-            self.lastAttackTime = time()
+            self.lastAttackTime = time.time()
 

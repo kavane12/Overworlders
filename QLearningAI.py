@@ -6,14 +6,14 @@ import math
 #Learning parameters
 ALPHA = 0.0002  #Learn rate
 GAMMA = 0.7     #Discount factor
-EPSILON = 0.3   #Chance of random action
+EPSILON = 1.0   #Chance of random action
 EPS_MIN = 0.05
-EPS_DECAY = 0.986
+EPS_DECAY = 0.992
 BATCH_SIZE = 2000
 
 #Reward parameters
-OFF_WEIGHT = 20  #Multiplier on the reward for doing damage
-DEF_WEIGHT = 2 #Multiplier on the penalty for taking damage
+OFF_WEIGHT = 20     #Multiplier on the reward for doing damage
+DEF_WEIGHT = 2      #Multiplier on the penalty for taking damage
 
 ActionList = [
     ('move', 1), ('move', 0), ('move', -1),
@@ -29,7 +29,7 @@ ActionList = [
 ]
 
 ActionLen = len(ActionList)
-StateLen = 6
+StateLen = 21
 
 class QLearningAI(AI):
     def __init__(self, timeMult, logfile, saveNet = None, loadNet = None):
@@ -59,12 +59,12 @@ class QLearningAI(AI):
             self.opponents[0]['life'] / 20,
             self.opponents[0]['weapon'],
             self.opponents[0]['using'],
-            (time() - self.opponents[0].useStartTime) if self.opponents[0].using else 0,
-            min((time() - self.lastAttackTime) * self.timeMult, .5),
-            (time() - self.useStartTime) if self.using else 0,
+            (time.time() - self.opponents[0]["useTime"]) if self.opponents[0]["using"] else 0,
+            min((time.time() - self.lastAttackTime) * self.timeMult, .5),
+            (time.time() - self.useStartTime) if self.using else 0,
             self.moving,
             self.strafing,
-            self.turning
+            self.turning,
             self.pitching,
             self.using,
             self.slotSelected
@@ -86,12 +86,12 @@ class QLearningAI(AI):
             self.pitching = action[1]
         elif(action[0] == 'attack'):
             agentHost.sendCommand('attack 0')
-            self.attacked =  min((time() - self.lastAttackTime) * self.timeMult, 0.5)
-            self.lastAttackTime = time()
+            self.attacked =  min((time.time() - self.lastAttackTime) * self.timeMult, 0.5)
+            self.lastAttackTime = time.time()
         elif(action[0] == 'use'):
             self.using = action[1]
             if(action[1] == 1):
-                self.useStartTime = time()
+                self.useStartTime = time.time()
         elif(action[0] == 'jump'):
             agentHost.sendCommand('jump 0')
         elif(action[0] == 'hotbar.1'):
@@ -124,14 +124,14 @@ class QLearningAI(AI):
         self.lastState = state
 
     def calcReward(self):
-        attackReward = 0.0
+        # attackReward = 0.0
 
-        distanceReward = 1 if self.opponents[0]['dist'] < 3.5 else 0
-        angleReward = 1 - (self.opponents[0]['angle'] / 45)**2 if abs(self.opponents[0]['angle']) < 45 else 0
-        if self.attacked > 0.2:
-            attackReward = self.attacked * 4 * distanceReward * angleReward
-        elif self.attacked != 0:
-            attackReward = -.1
+        #distanceReward = 1 if self.opponents[0]['dist'] < 3.5 else 0
+        #angleReward = 1 - (self.opponents[0]['angle'] / 45)**2 if abs(self.opponents[0]['angle']) < 45 else 0
+        #if self.attacked > 0.2:
+        #     attackReward = self.attacked * 4 * distanceReward * angleReward
+        # elif self.attacked != 0:
+        #     attackReward = -.1
 
         #if self.attacked != 0:
             #print("Atk: {:6.3f} Reward: {:6.3f} DistR: {:6.3f} AnglR: {:6.3f} dist: {:5.1f} angl: {:6.1f}"
@@ -140,10 +140,12 @@ class QLearningAI(AI):
         combatReward = OFF_WEIGHT * (self.lastOppLife - self.opponents[0]['life']) +\
             DEF_WEIGHT * (self.life - self.lastLife)
 
-        reward = 0.2 * (distanceReward + angleReward) + distanceReward * angleReward + attackReward + combatReward
+        # reward = 0.2 * (distanceReward + angleReward) + distanceReward * angleReward + attackReward + combatReward
+        reward = combatReward
+
         if combatReward != 0:
             print("HIT")
-            print("Combat:", combatReward, "Attack: ", self.attacked, "Time: ", time() - self.lastAttackTime)
+            print("Combat:", combatReward, "Attack: ", self.attacked, "Time: ", time.time() - self.lastAttackTime)
         #print("Total Reward: {:8.5f} Distance: {:8.5f} Angle: {:8.5f}".format(reward, distanceReward, angleReward))
         self.rewardList.append(reward)
         return reward
