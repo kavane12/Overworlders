@@ -29,7 +29,7 @@ ActionList = [
 ]
 
 ActionLen = len(ActionList)
-StateLen = 21
+StateLen = 22
 
 class QLearningAI(AI):
     def __init__(self, timeMult, logfile, saveNet = None, loadNet = None):
@@ -46,6 +46,7 @@ class QLearningAI(AI):
         f.close()
 
     def stateList(self):
+        now = time.time()
         state = [
             self.life / 20,
             self.yPos,
@@ -59,9 +60,10 @@ class QLearningAI(AI):
             self.opponents[0]['life'] / 20,
             self.opponents[0]['weapon'],
             self.opponents[0]['using'],
-            (time.time() - self.opponents[0]["useTime"]) if self.opponents[0]["using"] else 0,
-            min((time.time() - self.lastAttackTime) * self.timeMult, .5),
-            (time.time() - self.useStartTime) if self.using else 0,
+            min((now - self.opponents[0]['attackTime']) * self.timeMult, 0.5),
+            (now - self.opponents[0]["useTime"]) if self.opponents[0]["using"] else 0,
+            min((now - self.lastAttackTime) * self.timeMult, 0.5),
+            (now - self.useStartTime) if self.using else 0,
             self.moving,
             self.strafing,
             self.turning,
@@ -76,6 +78,7 @@ class QLearningAI(AI):
         action = ActionList[a]
         self.attacked = 0
         agentHost.sendCommand(action[0] + ' {}'.format(action[1]))
+        now = time.time()
         if(action[0] == 'move'):
             self.moving = action[1]
         elif(action[0] == 'strafe'):
@@ -86,12 +89,12 @@ class QLearningAI(AI):
             self.pitching = action[1]
         elif(action[0] == 'attack'):
             agentHost.sendCommand('attack 0')
-            self.attacked =  min((time.time() - self.lastAttackTime) * self.timeMult, 0.5)
-            self.lastAttackTime = time.time()
+            self.attacked =  min((now - self.lastAttackTime) * self.timeMult, 0.5)
+            self.lastAttackTime = now
         elif(action[0] == 'use'):
             self.using = action[1]
             if(action[1] == 1):
-                self.useStartTime = time.time()
+                self.useStartTime = now
         elif(action[0] == 'jump'):
             agentHost.sendCommand('jump 0')
         elif(action[0] == 'hotbar.1'):
