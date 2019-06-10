@@ -19,10 +19,10 @@ ANGLE_WEIGHT = 0.5  #Multiplier on the reward for looking in the general directi
 ActionList = [
     ('move', 1), ('move', 0), ('move', -1),
     ('strafe', 1), ('strafe', 0), ('strafe', -1),
-    ('turn', 1), ('turn', 0.6), ('turn', 0.4), ('turn', 0.2), ('turn', 0),
-    ('turn', -0.2), ('turn', -0.4), ('turn', -0.6), ('turn', -1),
-    ('pitch', 0.5), ('pitch', 0.2), ('pitch', 0.1), ('pitch', 0),
-    ('pitch', -0.1), ('pitch', -0.2), ('pitch', -0.5),
+    ('turn', 1), ('turn', 0.5), ('turn', 0.2), ('turn', 0.07), ('turn', 0),
+    ('turn', -0.07), ('turn', -0.2), ('turn', -0.5), ('turn', -1),
+    ('pitch', 0.4), ('pitch', 0.15), ('pitch', 0.05), ('pitch', 0),
+    ('pitch', -0.05), ('pitch', -0.15), ('pitch', -0.4),
     ('use', 0), ('use', 1),
     ('attack', 1),  #attack and jump are implemented as noncontinuous actions. The agent does not have to choose
     ('jump', 1),    #to stop performing them, instead they will only happen once
@@ -132,14 +132,15 @@ class QLearningAI(AI):
         self.lastState = state
 
     def calcReward(self):
-        # attackReward = 0.0
-
-        pitchReward = .5 if abs(self.pitch) < 30 else (-5 if abs(self.pitch) > 80 else 0)
+        attackReward = 0.0
+        pitchPenalty = -5 if abs(self.pitch) > 80 else 0
+        pitchReward = .5 if abs(self.pitch) < 30 else 0
         angleReward = ANGLE_WEIGHT * ((1 - self.opponents[0]['angle'] / 30)**2 if abs(self.opponents[0]['angle']) < 30 else 0)
-        #if self.attacked > 0.2:
-        #     attackReward = self.attacked * 4 * distanceReward * angleReward
-        # elif self.attacked != 0:
-        #     attackReward = -.1
+        if self.attacked > 0.2:
+            if self.opponents[0]['dist'] < 3.5:
+                attackReward = self.attacked * 4 * distanceReward * angleReward
+        elif self.attacked != 0:
+            attackReward = -.1
 
         #if self.attacked != 0:
             #print("Atk: {:6.3f} Reward: {:6.3f} DistR: {:6.3f} AnglR: {:6.3f} dist: {:5.1f} angl: {:6.1f}"
