@@ -43,7 +43,7 @@ def playerXML(num_agents):
 
 	for i in range(num_agents):
 		playersXML += '''
-    		<AgentSection mode="Survival">
+    		<AgentSection mode="Adventure">
                 <Name>''' + playerName(i) + '''</Name>
                 <AgentStart>
                     <Placement ''' + playerPlacement(i, num_agents) + '''/>
