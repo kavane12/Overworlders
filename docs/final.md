@@ -9,7 +9,6 @@ title:  Final Report
 <iframe width="560" height="315" src="https://www.youtube.com/embed/d3RGnFj9Nww" frameborder="0" allowfullscreen></iframe>
 </p>
 
-<br/>
 ## Project Summary
 
 The goal of this project is to create an AI capable of combat with other players. 
@@ -24,13 +23,23 @@ and can disable shields for a period of time
 Our implementation of the AI intends to make use of all features introduced above as well
 as unchanged mechanics to defeat other players of equal level of equipment.
 
-<br/>
 ## Approach
+Write approach here
 
-
-<br/>
 ## Evaluation
+Write eval here
 
-<br/>
-## References
+## References & Resources
+Libraries:
+- Tensorflow/Keras
+- Malmo
+
+Documentation:
+- [Project Malmo](http://microsoft.github.io/malmo/0.30.0/Documentation/index.html)
+- [Malmo Mission Schema](http://microsoft.github.io/malmo/0.30.0/Schemas/Mission.html)
+- [Keras](https://keras.io/)
+
+Other resources:
+- [Malmo's Multi Agent Python Example](https://github.com/microsoft/malmo/tree/master/Malmo/samples/Python_examples/multi_agent_test.py)
+- [Intro to Deep Q Learning](https://keon.io/deep-q-learning/)
 
