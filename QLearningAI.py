@@ -4,11 +4,11 @@ from AI import *
 import math
 
 #Learning parameters
-ALPHA = 0.0002  #Learn rate
+ALPHA = 0.0004  #Learn rate
 GAMMA = 0.9     #Discount factor
-EPSILON = 0.9   #Chance of random action
+EPSILON = 0.35  #Chance of random action
 EPS_MIN = 0.05
-EPS_DECAY = 0.993
+EPS_DECAY = 0.985
 BATCH_SIZE = 2000
 
 #Reward parameters
@@ -97,28 +97,32 @@ class QLearningAI(AI):
         elif(action[0] == 'jump'):
             agentHost.sendCommand('jump 0')
         elif(action[0] == 'attack'):
-            if self.drawing:
-                agentHost.sendCommand('hotbar.1 1')
-                agentHost.sendCommand('hotbar.1 0')
-                self.queuedCommands.append('use 0')
-                self.queuedCommands.append('attack 1')
-                self.queuedCommands.append('attack 0')
-                self.drawing = 0
-            elif self.blocking:
-                agentHost.sendCommand('use 0')
-                self.blocking = 0
-                self.queuedCommands.append('attack 1')
-                self.queuedCommands.append('attack 0')
-            else:
-                agentHost.sendCommand('attack 1')
-                agentHost.sendCommand('attack 0')
-            self.attacked =  self.timeSince(self.lastAttackTime, limit = 0.6)
-            self.lastAttackTime = time.time()
+            self.attacked = self.timeSince(self.lastAttackTime, limit = 0.6)
+            if self.attacked > 0.2:
+                if self.drawing:
+                    agentHost.sendCommand('use 0')
+                    agentHost.sendCommand('hotbar.1 1')
+                    agentHost.sendCommand('hotbar.1 0')
+                    self.queuedCommands.append('attack 1')
+                    self.queuedCommands.append('attack 0')
+                    self.drawing = 0
+                    self.shot = self.timeSince(self.drawStartTime)
+                elif self.blocking:
+                    self.blocking = 0
+                    agentHost.sendCommand('use 0')
+                    self.queuedCommands.append('attack 1')
+                    self.queuedCommands.append('attack 0')
+                else:
+                    agentHost.sendCommand('attack 1')
+                    agentHost.sendCommand('attack 0')
+                self.lastAttackTime = time.time()
         elif(action[0] == 'block'):
             if self.drawing:
+                agentHost.sendCommand('use 0')
                 agentHost.sendCommand('hotbar.1 1')
                 agentHost.sendCommand('hotbar.1 0')
                 self.drawing = 0
+                self.shot = self.timeSince(self.drawStartTime)
                 self.queuedCommands.append('use {}'.format(action[1]))
                 self.blocking = action[1]
             elif self.blocking != action[1]:
@@ -167,25 +171,34 @@ class QLearningAI(AI):
     def calcReward(self):
         attackReward = 0.0
         shotReward = 0.0
+        drawReward = 0.0
         
-        pitchPenalty = -5 if abs(self.pitch) > 80 else 0
+        pitchPenalty = -5 if abs(self.pitch) > 60 else 0
         pitchReward = 1 if abs(self.pitch) < 30 else 0
-        angleReward = (1 - abs(self.opponents[0]['angle']) / 30)**2 if abs(self.opponents[0]['angle']) < 30 else 0
-        '''
-        if self.attacked > 0.2:
-            if self.opponents[0]['dist'] < 4:
-                attackReward = self.attacked * 2 * pitchReward * angleReward
-        elif self.attacked != 0:
-            attackReward = -.1
+        angleReward = (1 - abs(self.opponents[0]['angle']) / 45)**2 if abs(self.opponents[0]['angle']) < 45 else 0
 
-        if self.attacked != 0:
+        if self.attacked > 0:
+            if self.opponents[0]['dist'] < 3.7:
+                if self.attacked > 0.2:
+                    attackReward = self.attacked * 2 * pitchReward * angleReward
+                else:
+                    attackReward = -.1
+            elif self.opponents[0]['dist'] > 5:
+                attackReward = -.5
+
             print("{} Atk: {:6.3f} Reward: {:6.3f} dist: {:5.1f} angl: {:6.1f} pitch: {:6.1f}"
                 .format(self.name, self.attacked, attackReward, self.opponents[0]['dist'],
                         self.opponents[0]['angle'], self.pitch))
 
+        shotPitchReward = (1 - abs(self.pitch + 2) / 30)**2 if abs(self.pitch + 2) < 30 else 0
+        
+        if self.drawing:
+            if self.timeSince(self.drawStartTime) < .95 and self.opponents[0]['dist'] > 5:
+                drawReward = 3 * angleReward * shotPitchReward
+                
         if self.shot > 0.3:
-            if self.opponents[0]['dist'] >= 4:
-                shotReward = self.shot * 2 * pitchReward * angleReward
+            if self.opponents[0]['dist'] >= 5:
+                shotReward = self.shot * 6 * angleReward * shotPitchReward
         elif self.shot != 0:
             shotReward = -.1
 
@@ -193,12 +206,12 @@ class QLearningAI(AI):
             print("{} Shot: {:6.3f} Reward: {:6.3f} dist: {:5.1f} angl: {:6.1f} pitch: {:6.1f}"
                 .format(self.name, self.shot, shotReward, self.opponents[0]['dist'],
                         self.opponents[0]['angle'], self.pitch))
-        '''
+        
         combatReward = OFF_WEIGHT * (self.lastOppLife - self.opponents[0]['life']) +\
             DEF_WEIGHT * (self.life - self.lastLife)
 
         reward = 0.2 * (pitchReward + angleReward) + pitchReward * angleReward + pitchPenalty +\
-            combatReward + attackReward + shotReward
+            combatReward + attackReward + shotReward + drawReward
 
         if combatReward != 0:
             print("{} HIT: {}".format(self.name, combatReward))

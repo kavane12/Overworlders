@@ -56,9 +56,9 @@ class AI:
             self.life = obs["Life"]
             if self.life <= 0:
                 return False
-            xPos = obs["XPos"]
+            self.xPos = obs["XPos"]
             self.yPos = obs["YPos"] - 200
-            zPos = obs["ZPos"]
+            self.zPos = obs["ZPos"]
             self.pitch = obs["Pitch"]
             yaw = obs["Yaw"]
             entities = obs["entities"]
@@ -66,8 +66,8 @@ class AI:
             for e in entities:
                 name = e['name']
                 if name.startswith("Player") and name != self.name:  # Must check that name starts with player, or else item entities will be picked up
-                    dx = e['x'] - xPos
-                    dz = e['z'] - zPos
+                    dx = e['x'] - self.xPos
+                    dz = e['z'] - self.zPos
                     a = deg(relativeAngle(dx, dz))
                     self.opponents.append({
                         'name':name,
@@ -76,7 +76,9 @@ class AI:
                         'y':e['y'] - 200,                   # Vertical position of oppoent
                         'yaw':angleMod(e['yaw'] - a + 180), # Relative yaw of opponent (0 = looking towards agent, 90 = looking to the right of agent, -90 = looking to the left)              
                         'pitch':e['pitch'],
-                        'life':e['life']
+                        'life':e['life'],
+                        'x':e['x'],
+                        'z':e['z']
                     })
                     for ai in AIs:
                         if ai.name == name:

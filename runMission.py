@@ -60,8 +60,8 @@ SPEED = 1   #simulation speed multiplier
 agent_hosts += [MalmoPython.AgentHost() for x in range(1, NUM_AGENTS + 1) ]
 
 # Create AI objects:
-ais = [QLearningAI(SPEED, 'T4_log1.txt', 'T4_P1'),
-       QLearningAI(SPEED, 'T4_log2.txt', 'T4_P2')]
+ais = [QLearningAI(SPEED, 'T7B_P1_log.txt', 'T7B_P1', 'T7_P1-376.dqn'),
+       QLearningAI(SPEED, 'T7B_p2_log.txt', 'T7B_P2', 'T7_P2-376.dqn')]
 
 # Set up debug output:
 for ah in agent_hosts:
@@ -72,7 +72,6 @@ if sys.version_info[0] == 2:
 else:
     import functools
     print = functools.partial(print, flush=True)
-
 
 
 def safeStartMission(agent_host, my_mission, my_client_pool, my_mission_record, role, expId):
