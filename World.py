@@ -21,8 +21,8 @@ def inventory(playerNum):
 
 # Starting positions when # of players = 2
 DUELPOSITIONS = [
-'x="-2.5" y="204.0" z="0.5"',
-'x="2.5" y="204.0" z="0.5"'
+'x="-5" y="204.0" z="0.5"',
+'x="5" y="204.0" z="0.5"'
 ]
 
 
@@ -43,7 +43,7 @@ def playerXML(num_agents):
 
 	for i in range(num_agents):
 		playersXML += '''
-    		<AgentSection mode="Survival">
+    		<AgentSection mode="Adventure">
                 <Name>''' + playerName(i) + '''</Name>
                 <AgentStart>
                     <Placement ''' + playerPlacement(i, num_agents) + '''/>

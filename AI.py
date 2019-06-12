@@ -16,10 +16,15 @@ class AI:
         #Previous state info (for calculating rewards)
         self.lastLife = 20
         self.lastOppLife = 20
-        self.slotSelected = 0
-        self.using = 0
-        self.useStartTime = time.time()
-        self.lastAttackTime = time.time()
+
+        #state info
+        self.moving = 0
+        self.strafing = 0
+        self.turning = 0
+        self.pitching = 0
+        self.blocking = 0
+        self.drawing = 0
+        
         worldState = agentHost.getWorldState()
         while worldState.number_of_observations_since_last_state <= 0:
             worldState = agentHost.getWorldState()
@@ -33,6 +38,10 @@ class AI:
         agentHost.sendCommand("hotbar.1 1")
         agentHost.sendCommand("hotbar.1 0")
         agentHost.sendCommand("sprint 1")
+
+        #additional info
+        self.drawStartTime = time.time()
+        self.lastAttackTime = time.time()
         
     def finalize(self):   #virtual function for any code that needs to be run on mission end
         pass
@@ -47,9 +56,9 @@ class AI:
             self.life = obs["Life"]
             if self.life <= 0:
                 return False
-            xPos = obs["XPos"]
+            self.xPos = obs["XPos"]
             self.yPos = obs["YPos"] - 200
-            zPos = obs["ZPos"]
+            self.zPos = obs["ZPos"]
             self.pitch = obs["Pitch"]
             yaw = obs["Yaw"]
             entities = obs["entities"]
@@ -57,8 +66,8 @@ class AI:
             for e in entities:
                 name = e['name']
                 if name.startswith("Player") and name != self.name:  # Must check that name starts with player, or else item entities will be picked up
-                    dx = e['x'] - xPos
-                    dz = e['z'] - zPos
+                    dx = e['x'] - self.xPos
+                    dz = e['z'] - self.zPos
                     a = deg(relativeAngle(dx, dz))
                     self.opponents.append({
                         'name':name,
@@ -67,13 +76,20 @@ class AI:
                         'y':e['y'] - 200,                   # Vertical position of oppoent
                         'yaw':angleMod(e['yaw'] - a + 180), # Relative yaw of opponent (0 = looking towards agent, 90 = looking to the right of agent, -90 = looking to the left)              
                         'pitch':e['pitch'],
-                        'life':e['life']
+                        'life':e['life'],
+                        'x':e['x'],
+                        'z':e['z']
                     })
                     for ai in AIs:
                         if ai.name == name:
-                            self.opponents[-1]['weapon'] = ai.slotSelected
-                            self.opponents[-1]['using'] = ai.using
-                            self.opponents[-1]['useTime'] = ai.useStartTime
+                            self.opponents[-1]['moving'] = ai.moving
+                            self.opponents[-1]['strafing'] = ai.strafing
+                            self.opponents[-1]['turning'] = ai.turning
+                            self.opponents[-1]['pitching'] = ai.pitching
+                            self.opponents[-1]['blocking'] = ai.blocking
+                            self.opponents[-1]['drawing'] = ai.drawing
+                            self.opponents[-1]['attackTime'] = ai.lastAttackTime
+                            self.opponents[-1]['drawTime'] = ai.drawStartTime
                             break
             self.opponents.sort(key = lambda x:x['dist'])
             self.run(agentHost)
