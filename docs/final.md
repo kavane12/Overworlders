@@ -20,7 +20,9 @@ We considered using axes for our AI since they can disable shields for a period 
 
 Our AI learns through a Deep Q learning algorithm and fights a copy of itself in a 20 by 20 block large arena. Both AIs come equipped in full iron armor (one agent uses a golden helmet for distinguishing the two AIs, but stat-wise is identical to an iron one). They wield stone swords, a basic bow, and a shield in the offhand.
 
+<p align="center">
 ![alt text](https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/final_equipment.png)
+</p>
 
 ## Approach
 Write approach here
