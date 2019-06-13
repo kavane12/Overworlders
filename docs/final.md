@@ -16,9 +16,9 @@ Our project aims to create an AI that is capable of advanced combat in Minecraft
 - Attacks need to be recharged in between swings to maximize damage; spammed attacks do next to no damage
 - Shields were introduced that can block all frontal damage when held up; however while held up the player is slowed and unable to attack
 
-We considered using axes for our AI since they can disable shields for a period of time, but opted not to as it has a lower dps than the sword and the chance of disabling a shield using it is prohibitedly low.
+We considered using axes for our AI since they can disable shields for a period of time, but opted not to as it has a lower dps than the sword and the chance of disabling a shield using it is prohibitively low.
 
-We trained 2 AIs, which learn through a Deep Q learning algorithm, against each other in a 20 by 20 block arena. Both AIs come equipped with full iron armor (one agent uses a golden helmet for distinguishing the two AIs, but stat-wise is identical to an iron one). They wield stone swords, a basic bow, and a shield in the offhand.
+We trained two AIs, which learn through a deep Q learning algorithm, against each other in a 20 by 20 block arena. Both AIs come equipped with full iron armor (one agent uses a golden helmet for distinguishing the two AIs, but stat-wise is identical to an iron one). They wield stone swords, a basic bow, and a shield in the offhand.
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/final_equipment.png">
