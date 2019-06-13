@@ -67,7 +67,7 @@ In this next training session, the AIs eventually begin learning how to do damag
 <img src="https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/training5.PNG">
 </p>
 
-After several further iterations and reward adjustments, the AIs learn complex behavior as shown in the video, such as switching combat methods based on distance from the opponent.
+After several further iterations and reward adjustments, the AIs learn complex behavior as shown in the video, such as switching combat methods based on distance from the opponent. The chart below shows one of these later training sessions. The reward and damage done are low at the beginning, despite starting with an already trained network, as the epsilon value was raised in order to allow for exploration. These values increase sharply at first, then more slowly as epsilon nears its minimum, though the positive trend continues, indicating further refinement taking place.
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/kavane12/Overworlders/master/docs/pics/training7.PNG">
