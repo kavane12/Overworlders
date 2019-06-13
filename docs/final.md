@@ -6,7 +6,7 @@ title:  Final Report
 ## Video
 
 <p align="center">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/d3RGnFj9Nww" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/xGurgRTPses" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </p>
 
 ## Project Summary
