@@ -60,8 +60,8 @@ SPEED = 1   #simulation speed multiplier
 agent_hosts += [MalmoPython.AgentHost() for x in range(1, NUM_AGENTS + 1) ]
 
 # Create AI objects:
-ais = [QLearningAI(SPEED, 'T7B_P1_log.txt', 'T7B_P1', 'T7_P1-376.dqn'),
-       QLearningAI(SPEED, 'T7B_p2_log.txt', 'T7B_P2', 'T7_P2-376.dqn')]
+ais = [QLearningAI(SPEED, 'T7C_log.txt', 'T7C_P1', 'T7B_P1-88.dqn'),
+       QLearningAI(SPEED, 'T7C_log.txt', 'T7C_P2', 'T7B_P2-88.dqn')]
 
 # Set up debug output:
 for ah in agent_hosts:

@@ -6,7 +6,7 @@ import math
 #Learning parameters
 ALPHA = 0.0004  #Learn rate
 GAMMA = 0.9     #Discount factor
-EPSILON = 0.35  #Chance of random action
+EPSILON = 0.2   #Chance of random action
 EPS_MIN = 0.05
 EPS_DECAY = 0.985
 BATCH_SIZE = 2000
@@ -178,12 +178,12 @@ class QLearningAI(AI):
         angleReward = (1 - abs(self.opponents[0]['angle']) / 45)**2 if abs(self.opponents[0]['angle']) < 45 else 0
 
         if self.attacked > 0:
-            if self.opponents[0]['dist'] < 3.7:
+            if self.opponents[0]['dist'] < 3.4:
                 if self.attacked > 0.2:
                     attackReward = self.attacked * 2 * pitchReward * angleReward
                 else:
                     attackReward = -.1
-            elif self.opponents[0]['dist'] > 5:
+            elif self.opponents[0]['dist'] > 4:
                 attackReward = -.5
 
             print("{} Atk: {:6.3f} Reward: {:6.3f} dist: {:5.1f} angl: {:6.1f} pitch: {:6.1f}"

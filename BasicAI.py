@@ -1,12 +1,12 @@
 from AI import *
 
     # Parameters:
-attackSpeed = 1.7   # Max attacks per second
+attackSpeed = 1.5   # Max attacks per second
 shotSpeed = .5       # Max bow shots per second
 turnAngle = 60      # Angle at which agent will turn at full speed. If set too low, agent will oscillate
 moveDist = 4.5      # Below this threshold, agent will move toward opponent for melee combat, above, it will back away and shoot
 attackAngle = 10    # Maximum angle at which agent will try to attack
-attackDist = 3.7    # Maximum distance at which agent will try to attack
+attackDist = 3.5    # Maximum distance at which agent will try to attack
 
 class BasicAI(AI):
     def run(self, agentHost):          
@@ -14,7 +14,7 @@ class BasicAI(AI):
         targetPitch = -15 * (enemy['dist'] - attackDist) if enemy['dist'] < attackDist else -(enemy['dist'] / 15)**2
         self.turning = enemy['angle'] / turnAngle if abs(enemy['angle']) < turnAngle else (1 if enemy['angle'] > 0 else -1)
         self.pitching = (targetPitch - self.pitch) / 180
-        if enemy['dist'] < moveDist and not self.drawing:
+        if True: #enemy['dist'] < moveDist and not self.drawing:
             if enemy['dist'] > attackDist:
                 self.moving = 1
             else:
